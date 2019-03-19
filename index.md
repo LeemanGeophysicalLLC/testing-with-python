@@ -42,7 +42,7 @@ This is an **intermediate** skill level course. We assume that participants:
   - Testing a return value.
   - Running tests.
   - *Exercise*: Write a test of your own for the example library.
-- Coverage (30 minutes)
+- [Coverage](coverage.html) (30 minutes)
   - Determining coverage with pytest-cov
   - *Exercise*: Determine where the test gaps are in our example library.
 - Advanced PyTest (60 minutes)
