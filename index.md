@@ -32,7 +32,8 @@ This is an **intermediate** skill level course. We assume that participants:
 - Have a GitHub account.
 
 ## Course Outline
-- Initial Setup (15 minutes)
+- [Setup and Introductions](setup.html) (15 minutes)
+  - Meet each other.
   - Ensure that all learner's machines are setup properly with course content
     downloaded and the environment created and activated.
   - Introduce the example library we will be testing during the course.
