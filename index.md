@@ -37,7 +37,7 @@ This is an **intermediate** skill level course. We assume that participants:
   - Ensure that all learner's machines are setup properly with course content
     downloaded and the environment created and activated.
   - Introduce the example library we will be testing during the course.
-- Testing Basics (60 minutes)
+- [Testing Basics](testing_basics.html) (60 minutes)
   - Structure of a test.
   - Testing a return value.
   - Running tests.
