@@ -79,3 +79,5 @@ in the documentation.
 ## Exercise
 We've show you some tests and talked about how to structure them, now it's your
 turn! Write tests for the foo, bar, and zorp functions of the meteogram library.
+
+[Home](index.html)
