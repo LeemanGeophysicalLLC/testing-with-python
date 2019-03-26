@@ -45,17 +45,17 @@ This is an **intermediate** skill level course. We assume that participants:
 - [Coverage](coverage.html) (30 minutes)
   - Determining coverage with pytest-cov
   - *Exercise*: Determine where the test gaps are in our example library.
-- Advanced PyTest (60 minutes)
+- [Advanced PyTest](advanced_pytest.html) (60 minutes)
   - pytest-mpl for testing plots.
   - *Exercise*: Create an image test.
   - pytest parameterization.
   - pytest fixtures.
   - *Exercise*: Use parameterization and fixturing to refactor the current
     test suite.
-- Test Driven Development Introduction (45 mins, optional)
+- [Test Driven Development Introduction](TDD_intro.html) (45 mins, optional)
   - Demonstration of TDD practices.
   - *Exercise*: Add a function using the TDD methodology.
-- Conclusion (15 minutes)
+- [Conclusion](conclusion.html) (15 minutes)
   - Questions
   - Resources
   - Survey
