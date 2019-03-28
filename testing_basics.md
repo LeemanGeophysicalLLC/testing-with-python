@@ -158,6 +158,10 @@ def test_title_case():
 <li>Fill out the tests for the url builder function.</li>
 </ul>
 </span>
+
+<div class="alert alert-success">
+Testing bootstrap classes
+</div>
 ### Numerical Comparison
 
 ### Array Comparison
