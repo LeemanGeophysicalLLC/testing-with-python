@@ -223,18 +223,23 @@ def test_floating_subtraction():
 <b>Exercise</b>
   <ul>
     <li>Fill out the test for a simple temperature conversion. Test the value
-    of 32 &deg;F.</li>
+    of 32&deg;F.</li>
   </ul>
 </div>
 
 ### Array Comparison
 
+Array comparisons are much like floating point. In this case we're going to
+add functionality to compare if the arrays are almost equal to get around
+the same floating point issue we just tackled.
+
 <div class="alert alert-success">
 <b>Exercise</b>
   <ul>
+    <li>Write a wrapper for the numpy testing function
+    numpy.testing.assert_array_almost_equal called assert_array_almost_equal.</li>
     <li>Create a new test (we didn't provide a skeleton here!) that checks the
-    temperature conversion on an array of temperatures: -40, 32, and 40
-    &deg;F</li>
+    temperature conversion on an array of temperatures: -40, 32, and 40&deg;F</li>
   </ul>
 </div>
 
