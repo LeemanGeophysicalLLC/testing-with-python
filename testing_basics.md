@@ -51,9 +51,9 @@ brittle, untrusted, and expensive to maintain, defeating their purpose!
 * Write tests first (TDD)
 * Design for testability
 * Use the front door first
-  * "round trip" testing only uses the public interface
-  * "layer crossing" testing uses the public interface and monitors the back door
-  * "asynchronous" testing interacts with real messaging and should be avoided at all costs
+  * **"round trip"** testing only uses the public interface
+  * **"layer crossing"** testing uses the public interface and monitors the back door
+  * **"asynchronous"** testing interacts with real messaging and should be avoided at all costs
 * Communicate intent
 * Don't modify the SUT
 * Keep tests independent
@@ -88,31 +88,6 @@ and greatly increases the documentation value of the test.
 1. **Verify** - Check the expected outcome.
 1. **Cleanup** - Return the system under test to its initial state after the test.
 
-Let's look at an example of the Four-Phase Test Pattern in action. **Instructor:
-write this out on the board or type in editor in no board available.**
-
-Here's a simple function to test:
-```python
-def degc_to_degf(degc):
-  return degc * (9 / 5) + 32
-```
-
-Here's the test for it following the Four-Phase Test Pattern:
-```python
-def test_degc_to_degf_scalar():
-  # Setup
-  deg_c_value = 22.0
-  truth_value = 71.6  # From Jones et al. (1971)
-
-  # Exercise
-  res = degc_to_degf(deg_c_value)
-
-  # Verify
-  assert(res == truth_value)
-
-  ## Cleanup - None in this case.
-```
-
 ## Running Tests
 PyTest will automatically look for files named `test_*.py` or `*_test.py` and
 from them run functions whose names begin with `test` and/or methods that
@@ -143,7 +118,7 @@ Comparing strings is done with a simple equality check.
 def test_title_case():
   # Setup
   input = 'this is a test string'
-  desired = 'This Is A Yest String'
+  desired = 'This Is A Test String'
 
   # Exercise
   actual = input.title()
@@ -156,9 +131,11 @@ def test_title_case():
 
 <div class="alert alert-success">
 <b>Exercise</b>
-* Fill out the tests for the url builder function using what you know about
-  string comparisons. The test names are descriptive enough that you already
-  know what to do!
+  <ul>
+    <li>Fill out the tests for the url builder function using what you know
+    about string comparisons. The test names are descriptive enough that you
+    already know what to do!</li>
+  </ul>
 </div>
 
 ### Numerical Comparison
@@ -189,7 +166,8 @@ def test_floating_subtraction():
   # Cleanup - automatically garbage collected
 ```
 
-The best way to deal with this is to add a tolerance check, something like
+The best way to deal with this is to add a tolerance check, something like:
+
 ```python
 def test_floating_subtraction():
     # Setup
@@ -211,6 +189,7 @@ going to wrap it in a testing helpers module of meteogram.
 
 * Create `testing.py` in the `meteogram` directory.
 * Add this function:
+
 ```python
 import numpy as np
 
