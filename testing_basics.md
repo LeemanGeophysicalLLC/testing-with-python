@@ -219,11 +219,23 @@ def test_floating_subtraction():
     # Cleanup - automatically garbage collected
 ```
 
+<div class="alert alert-success">
+<b>Exercise</b>
+  <ul>
+    <li>Fill out the test for a simple temperature conversion. Test the value
+    of 32 &deg;F.</li>
+  </ul>
+</div>
+
 ### Array Comparison
 
-## Exercise
-We've shown you some tests and talked about how to structure them, now it's your
-turn! We've provided descriptive test names in the commented out skeletons.
-Write tests to the point that says "Stop here for testing basics exercise".
+<div class="alert alert-success">
+<b>Exercise</b>
+  <ul>
+    <li>Create a new test (we didn't provide a skeleton here!) that checks the
+    temperature conversion on an array of temperatures: -40, 32, and 40
+    &deg;F</li>
+  </ul>
+</div>
 
 [Home](index.html)
