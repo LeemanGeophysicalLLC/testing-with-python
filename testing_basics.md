@@ -152,9 +152,11 @@ def test_title_case():
   # Cleanup - automatically garbage collected
 ```
 
-<span style="background-color:green">
-**Exercise**
-* Fill out the tests for the url builder function.
+<span style="background-color:#28a745">
+<b>Exercise</b>
+<ul>
+<li>Fill out the tests for the url builder function.</li>
+</ul>
 </span>
 ### Numerical Comparison
 
