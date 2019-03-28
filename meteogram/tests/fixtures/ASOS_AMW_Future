@@ -1,0 +1,39 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Connection:
+      - close
+      Host:
+      - mesonet.agron.iastate.edu
+      User-Agent:
+      - Python-urllib/3.7
+    method: GET
+    uri: https://mesonet.agron.iastate.edu/request/asos/1min_dl.php?station%5B%5D=AMW&tz=UTC&year1=2999&month1=10&day1=10&hour1=10&minute1=00&year2=2999&month2=11&day2=10&hour2=10&minute2=00&vars%5B%5D=tmpf&vars%5B%5D=dwpf&vars%5B%5D=sknt&vars%5B%5D=drct&sample=1min&what=view&delim=comma&gis=yes
+  response:
+    body:
+      string: 'station,station_name,lat,lon,valid(UTC),tmpf,dwpf,sknt,drct,
+
+'
+    headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Connection:
+      - close
+      Content-Type:
+      - text/plain; charset=UTF-8
+      Date:
+      - Thu, 28 Mar 2019 14:40:35 GMT
+      Server:
+      - Apache/2.4.6 (Red Hat Enterprise Linux) OpenSSL/1.0.2k-fips mod_fcgid/2.3.9
+        mod_wsgi/4.6.4 Python/3.6
+      Transfer-Encoding:
+      - chunked
+      X-IEM-ServerID:
+      - iemvs101.local
+      X-Powered-By:
+      - PHP/5.4.16
+    status:
+      code: 200
+      message: OK
+version: 1
