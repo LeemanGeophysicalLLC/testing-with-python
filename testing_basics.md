@@ -6,6 +6,66 @@
 * Learn how to check return values in tests.
 * Write your own tests.
 
+Tests in software are like rumble strips on the highway - they provide feedback
+to the driver as early as possible when they depart their normal lane and gives
+them time to correct the situation comfortably before they depart the road and
+have an accident.
+
+### Goals of Testing
+* Improve software quality
+  * Act as a specification
+  * Provide defect localization
+  * Bug repellant
+* Understand the system under test (SUT)
+  * Act as documentation
+* Reduce, not introduce risk
+  * Provide a safety net
+  * Do no harm (no test logic in production)
+* Be easy to run (and are run frequently)
+  * Automated
+  * Self-Checking (Hollywood Principle)
+  * Repeatable
+  * Independent
+* Be easy to write and maintain
+  * Simple
+  * Expressive
+  * Separation of Concerns
+* Require minimal maintenance as the system evolves
+* Robust testing and test design
+
+> The effectiveness of the safety net is determined by how completely our tests
+> verify the behavior of the system. Missing tests are like holes in the safety
+> net. Incomplete assertions are like broken strands. Each gap in the safety net
+> can let bugs of various sizes through. - Meszaros
+
+Just like code can have smells, tests can have smells. If something stinks, it
+should be changed and tests are no exception. Stinky test suites can become
+brittle, untrusted, and expensive to maintain, defeating their purpose!
+
+> "Writing good test code is hard, and maintaining obtuse test code is even
+> harder." - Meszaros
+
+## Testing Principles
+* Write tests first (TDD)
+* Design for testability
+* Use the front door first
+  * "round trip" testing only uses the public interface
+  * "layer crossing" testing uses the public interface and monitors the back door
+  * "asynchronous" testing interacts with real messaging and should be avoided at all costs
+* Communicate intent
+* Don't modify the SUT
+* Keep tests independent
+* Isolate the SUT
+* Minimize test overlap
+* Minimize untestable code
+* Keep test logic out of production code
+* Verify one condition per test
+  * No alternating exercise/verify blocks
+* Test concerns separately
+* Ensure commensurate effort and responsibility
+  * The effort to write the test shouldn't overshadow the effort to
+    write the production code.
+
 ## Structure of a Test
 * Tests should test one and only functionality in a way as independent of outside
   influences as possible.
@@ -61,23 +121,48 @@ full test discovery process is detailed
 in the documentation.
 
 ### Run the existing test suite
-* First, look at the tests that are written and how we've broken it up.
-* Remind students on the Four-Phase testing we are doing.
+* First, look at the tests file - with a single test currently implemented.
+* Remind students of the Four-Phase testing we are doing.
 * Open a terminal (or Anaconda Prompt).
 * Run the command `pytest` and let the suite run.
 * Look at and explain the test report.
-* Modify a test so that it will fail and show what that report looks like.
+* Modify the test so that it will fail and show what that report looks like.
 
 ## Checking Return Values
 
-### String Comparison
+All tests need to use a form of the `assert` statement which will pass if the
+condition inside is `True` and fail if it is `False`. This can be as simple as
+`assert(a==b)` and we should be striving for simplicity!
 
+### String Comparison
+Comparing strings is done with a simple equality check.
+
+```python
+def test_title_case():
+  # Setup
+  input = 'this is a test string'
+  desired = 'This Is A Yest String'
+
+  # Exercise
+  actual = input.title()
+
+  # Verify
+  assert(actual==desired)
+
+  # Cleanup - automatically garbage collected
+```
+
+<span style="background-color:green">
+**Exercise**
+* Fill out the tests for the url builder function.
+</span>
 ### Numerical Comparison
 
 ### Array Comparison
 
 ## Exercise
-We've show you some tests and talked about how to structure them, now it's your
-turn! Write tests for the foo, bar, and zorp functions of the meteogram library.
+We've shown you some tests and talked about how to structure them, now it's your
+turn! We've provided descriptive test names in the commented out skeletons.
+Write tests to the point that says "Stop here for testing basics exercise".
 
 [Home](index.html)

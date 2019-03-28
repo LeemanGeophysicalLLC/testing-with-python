@@ -113,8 +113,4 @@ There are a just a couple of other things you'll want to do:
 ## After the Course
 After the course is complete, we encourage you to implement testing and basic
 test driven practices in your software development cycle. You can always
-contact us with questions! Below are some resources we find useful:
-- [xUnit Test Patterns: Refactoring Test Code (Book)](https://amzn.to/2TDAfu2)
-- [Working Effectively with Legacy Code (Book)](https://amzn.to/2Y0A8r1)
-- [Python Testing with pytest: Simple, Rapid, Effective, and Scalable (Book)](https://amzn.to/2CmOSqO)
-- [Refactoring: Improving the Design of Existing Code (Book)](https://amzn.to/2Cmpj9r)
+contact us with questions!

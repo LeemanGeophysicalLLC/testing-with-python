@@ -5,7 +5,10 @@ course! What questions do you have?
 
 ## Resources
 As you continue your testing journey, you might find these resources helpful:
-* []()
+- [xUnit Test Patterns: Refactoring Test Code (Book)](https://amzn.to/2TDAfu2)
+- [Working Effectively with Legacy Code (Book)](https://amzn.to/2Y0A8r1)
+- [Python Testing with pytest: Simple, Rapid, Effective, and Scalable (Book)](https://amzn.to/2CmOSqO)
+- [Refactoring: Improving the Design of Existing Code (Book)](https://amzn.to/2Cmpj9r)
 
 ## Survey
 We would greatly appreciate it if you would help us improve this course by
