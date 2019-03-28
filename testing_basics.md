@@ -154,17 +154,91 @@ def test_title_case():
   # Cleanup - automatically garbage collected
 ```
 
-<span style="background-color:#28a745">
-<b>Exercise</b>
-<ul>
-<li>Fill out the tests for the url builder function.</li>
-</ul>
-</span>
-
 <div class="alert alert-success">
-Testing bootstrap classes
+<b>Exercise</b>
+* Fill out the tests for the url builder function using what you know about
+  string comparisons. The test names are descriptive enough that you already
+  know what to do!
 </div>
+
 ### Numerical Comparison
+Numerical comparisons are a common place that new testers start getting into
+trouble. Testing integers is straightforward:
+
+```python
+assert(3==3)
+```
+
+Trouble begins immediately when we leave the integer world though! Floating
+point comparisons are fraught with peril. If you really want to get into why
+there is a lot of light bedtime reading about the IEEE 754 specification and
+how machine precision results in small rounding errors. For our purposes we
+will simply say that this is **NOT** a safe thing to do:
+
+```python
+def test_floating_subtraction():
+  # Setup
+  desired = 1.5
+
+  # Exercise
+  actual = 3 - 1.5
+
+  # Verify
+  assert(actual==desired)
+
+  # Cleanup - automatically garbage collected
+```
+
+The best way to deal with this is to add a tolerance check, something like
+```python
+def test_floating_subtraction():
+    # Setup
+    desired = 1.5
+
+    # Exercise
+    actual = 3 - 1.5
+
+    # Verify
+    assert(abs(actual-desired) < 0.00001)
+
+    # Cleanup - automatically garbage collected
+```
+
+That would result in too much logic and duplicated code in our tests and seems
+like a solved problem right? Numpy has a testing helper for exactly this:
+`np.testing.assert_almost_equal`. Instead of calling that every time, we're
+going to wrap it in a testing helpers module of meteogram.
+
+* Create `testing.py` in the `meteogram` directory.
+* Add this function:
+```python
+import numpy as np
+
+
+def assert_almost_equal(actual, desired, decimal=7):
+    """Check that values are almost equal.
+    Wrapper around :func:`numpy.testing.assert_almost_equal`
+    """
+    np.testing.assert_almost_equal(actual, desired, decimal)
+```
+
+Now our test can simplify to:
+```python
+from meteogram.testing import assert_almost_equal
+
+
+def test_floating_subtraction():
+    # Setup
+    desired = 1.5
+
+    # Exercise
+    actual = 3 - 1.5
+
+    # Verify
+    assert_almost_equal(actual, desired)
+
+    # Cleanup - automatically garbage collected
+```
 
 ### Array Comparison
 
