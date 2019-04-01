@@ -7,6 +7,7 @@
 * Learn how to run tests.
 * Learn how to check return values in tests.
 * Write your own tests.
+* Write a mock for out tests.
 
 Tests in software are like rumble strips on the highway - they provide feedback
 to the driver as early as possible when they depart their normal lane and gives
@@ -240,6 +241,47 @@ the same floating point issue we just tackled.
     numpy.testing.assert_array_almost_equal called assert_array_almost_equal.</li>
     <li>Create a new test (we didn't provide a skeleton here!) that checks the
     temperature conversion on an array of temperatures: -40, 32, and 40&deg;F</li>
+  </ul>
+</div>
+
+### Mocking out functions
+Let's modify the url builder again!
+
+* Add a default of `None` to `start_date` and `end_date`.
+* Add logic for what to do when they are none.
+
+```python
+# If there is no ending date specified, use the current date and time
+  if end_date is None:
+      end_date = current_utc_time()
+
+  # If there is no starting date specified, use 24 hours before the ending date and time
+  if start_date is None:
+      start_date = end_date - datetime.timedelta(hours=24)
+```
+
+* What problems will we run into when trying to test this?
+* Let's create a mock function to override our library `current_utc_time`.
+
+```python
+def mocked_current_utc_time():
+    """
+    Mock our utc time function for testing with defaults.
+    """
+    return datetime.datetime(2018, 3, 26, 12)
+```
+
+* Now let's use it on a test.
+
+```python
+@patch('meteogram.meteogram.current_utc_time', new=mocked_current_utc_time)
+def test_the_thing():
+```
+
+<div class="alert alert-success">
+<b>Exercise</b>
+  <ul>
+    <li>Finish writing and modifying the tests for the URL builder.</li>
   </ul>
 </div>
 
