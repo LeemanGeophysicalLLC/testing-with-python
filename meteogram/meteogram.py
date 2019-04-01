@@ -22,7 +22,7 @@ def current_utc_time():
     return datetime.datetime.utcnow()
 
 
-def build_asos_request_url(station, start_date=None, end_date=None):
+def build_asos_request_url(station, start_date, end_date):
     """
     Create a URL to request ASOS data from the Iowa State archive.
 
@@ -39,14 +39,6 @@ def build_asos_request_url(station, start_date=None, end_date=None):
     -------
     str: URL of the data
     """
-
-    # If there is no ending date specified, use the current date and time
-    if end_date is None:
-        end_date = current_utc_time()
-
-    # If there is no starting date specified, use 24 hours before the ending date and time
-    if start_date is None:
-        start_date = end_date - datetime.timedelta(hours=24)
 
     url_str = (f'https://mesonet.agron.iastate.edu/request/asos/1min_dl.php?station%5B%5D='
                f'{station}&tz=UTC&year1={start_date:%Y}&month1={start_date:%m}&day1'

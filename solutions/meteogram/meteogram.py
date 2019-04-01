@@ -79,8 +79,8 @@ def download_asos_data(url):
     # Rename the columns to more useful names
     df.columns = ['station_id', 'station_name', 'latitude_deg',
                   'longitude_deg', 'UTC', 'temperature_degF',
-                  'dewpoint_degF', 'wind_direction_degrees',
-                  'wind_speed_knots']
+                  'dewpoint_degF', 'wind_speed_knots',
+                  'wind_direction_degrees']
 
     # Parse the valid times into real datetimes
     df['UTC'] = pd.to_datetime(df['UTC'])

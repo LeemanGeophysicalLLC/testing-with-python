@@ -30,4 +30,4 @@ def assert_dataseries_equal(actual, desired):
         if 'float' in str(type(desired.get(key))):
             assert_almost_equal(actual.get(key), desired.get(key))
         else:
-            assert(actual.get(key) == desired.get(key))
+            assert actual.get(key) == desired.get(key)
