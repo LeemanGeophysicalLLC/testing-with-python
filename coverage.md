@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 # Coverage
 
 Coverage tells us how much of our code is tested by the test suite. It is easy
@@ -15,10 +16,14 @@ command line.
 * Navigate to the root directory of the repository.
 * Run `pytest --cov=myproj tests/`
 
-## Exercise
-* Run a coverage check on our library. What holes do we have? Are there any
-  you can repair with what we've learned so far? Try writing some tests to
-  increase the coverage. You haven't learned techniques to test everything yet,
-  but increase coverage where you can.
+<div class="alert alert-success">
+<b>Exercise 4</b>
+  <ul>
+    <li>Run a coverage check on our library. What holes do we have? Are there
+        any you can repair with what we've learned so far? Try writing some
+        tests to increase the coverage. You haven't learned techniques to test
+        everything yet, but increase coverage where you can.</li>
+  </ul>
+</div>
 
 [Home](index.html)

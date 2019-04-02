@@ -34,7 +34,6 @@ have an accident.
   * Expressive
   * Separation of Concerns
 * Require minimal maintenance as the system evolves
-* Robust testing and test design
 
 > The effectiveness of the safety net is determined by how completely our tests
 > verify the behavior of the system. Missing tests are like holes in the safety
@@ -52,9 +51,11 @@ brittle, untrusted, and expensive to maintain, defeating their purpose!
 * Write tests first (TDD)
 * Design for testability
 * Use the front door first
-  * **"round trip"** testing only uses the public interface
-  * **"layer crossing"** testing uses the public interface and monitors the back door
-  * **"asynchronous"** testing interacts with real messaging and should be avoided at all costs
+  * **"api level"** testing only uses the public interface
+  * **"layer crossing"** testing uses the public interface and monitors
+    the back door
+  * **"asynchronous"** testing interacts with external services
+    (databases, remote servers) and should be avoided at all costs
 * Communicate intent
 * Don't modify the SUT
 * Keep tests independent
@@ -74,7 +75,8 @@ brittle, untrusted, and expensive to maintain, defeating their purpose!
   influences as possible.
 * Tests should be as authentic as possible (don't test with only integers if
   most user data will be floating point).
-* Tests should not depend on external data (URLs, databases, etc)
+* Tests should not depend on data external to the test framework
+  (URLs, databases, etc)
 * Tests should use all functionality of the testing harness to eliminate any
   "test smell" - just like code smell.
 
@@ -99,7 +101,7 @@ full test discovery process is detailed
 in the documentation.
 
 ### Run the existing test suite
-* First, look at the tests file - with a single test currently implemented.
+* First, look at the tests file - with a single test currently.
 * Remind students of the Four-Phase testing we are doing.
 * Open a terminal (or Anaconda Prompt).
 * Run the command `pytest` and let the suite run.
@@ -109,8 +111,8 @@ in the documentation.
 ## Checking Return Values
 
 All tests need to use a form of the `assert` statement which will pass if the
-condition inside is `True` and fail if it is `False`. This can be as simple as
-`assert(a==b)` and we should be striving for simplicity!
+conditional is `True` and fail if it is `False`. This can be as simple as
+`assert a==b` and we should be striving for simplicity!
 
 ### String Comparison
 Comparing strings is done with a simple equality check.
@@ -125,13 +127,13 @@ def test_title_case():
   actual = input.title()
 
   # Verify
-  assert(actual==desired)
+  assert actual==desired
 
-  # Cleanup - automatically garbage collected
+  # Cleanup
 ```
 
 <div class="alert alert-success">
-<b>Exercise</b>
+<b>Exercise 1</b>
   <ul>
     <li>Fill out the tests for the url builder function using what you know
     about string comparisons. The test names are descriptive enough that you
@@ -139,12 +141,18 @@ def test_title_case():
   </ul>
 </div>
 
+#### Solution
+```python
+# TODO Write me!
+```
+
 ### Numerical Comparison
 Numerical comparisons are a common place that new testers start getting into
 trouble. Testing integers is straightforward:
 
 ```python
-assert(3==3)
+def test_does_three_equal_three():
+    assert 3==3
 ```
 
 Trouble begins immediately when we leave the integer world though! Floating
@@ -156,15 +164,15 @@ will simply say that this is **NOT** a safe thing to do:
 ```python
 def test_floating_subtraction():
   # Setup
-  desired = 1.5
+  desired = 0.293
 
   # Exercise
-  actual = 3 - 1.5
+  actual = 1 - 0.707
 
   # Verify
-  assert(actual==desired)
+  assert actual==desired
 
-  # Cleanup - automatically garbage collected
+  # Cleanup
 ```
 
 The best way to deal with this is to add a tolerance check, something like:
@@ -172,39 +180,24 @@ The best way to deal with this is to add a tolerance check, something like:
 ```python
 def test_floating_subtraction():
     # Setup
-    desired = 1.5
+    desired = 0.293
 
     # Exercise
-    actual = 3 - 1.5
+    actual = 1 - 0.707
 
     # Verify
     assert(abs(actual-desired) < 0.00001)
 
-    # Cleanup - automatically garbage collected
+    # Cleanup
 ```
 
 That would result in too much logic and duplicated code in our tests and seems
 like a solved problem right? Numpy has a testing helper for exactly this:
-`np.testing.assert_almost_equal`. Instead of calling that every time, we're
-going to wrap it in a testing helpers module of meteogram.
-
-* Create `testing.py` in the `meteogram` directory.
-* Add this function:
-
-```python
-import numpy as np
-
-
-def assert_almost_equal(actual, desired, decimal=7):
-    """Check that values are almost equal.
-    Wrapper around :func:`numpy.testing.assert_almost_equal`
-    """
-    np.testing.assert_almost_equal(actual, desired, decimal)
-```
+`np.testing.assert_almost_equal`.
 
 Now our test can simplify to:
 ```python
-from meteogram.testing import assert_almost_equal
+from np.testing import assert_almost_equal
 
 
 def test_floating_subtraction():
@@ -221,28 +214,39 @@ def test_floating_subtraction():
 ```
 
 <div class="alert alert-success">
-<b>Exercise</b>
+<b>Exercise 2</b>
   <ul>
-    <li>Fill out the test for a simple temperature conversion. Test the value
-    of 32&deg;F.</li>
+    <li>Add a function to the library to calculate the vector components u, v
+        of wind given a windspeed and direction.</li>
+    <li>Write tests to verify proper behavior for directions of 0, 180, 360, and
+        for a windspeed of zero.</li>
   </ul>
 </div>
+
+#### Solution
+```python
+# TODO Write me!
+```
 
 ### Array Comparison
 
-Array comparisons are much like floating point. In this case we're going to
-add functionality to compare if the arrays are almost equal to get around
-the same floating point issue we just tackled.
+Array comparisons are much like integer and floating point comparisons.
+In this case we're going to use `np.testing.assert_array_almost_equal` to
+cleanup our tests we just wrote.
 
-<div class="alert alert-success">
-<b>Exercise</b>
+<div class="alert alert-warning">
+<b>Instructor Led</b>
   <ul>
-    <li>Write a wrapper for the numpy testing function
-    numpy.testing.assert_array_almost_equal called assert_array_almost_equal.</li>
-    <li>Create a new test (we didn't provide a skeleton here!) that checks the
-    temperature conversion on an array of temperatures: -40, 32, and 40&deg;F</li>
+    <li>Add the needed import.</li>
+    <li>Refactor the four tests just written into a single test using array
+        comparison.</li>
   </ul>
 </div>
+
+#### Instructor Code
+```python
+# TODO Write me!
+```
 
 ### Mocking out functions
 Let's modify the url builder again!
@@ -279,10 +283,16 @@ def test_the_thing():
 ```
 
 <div class="alert alert-success">
-<b>Exercise</b>
+<b>Exercise 3</b>
   <ul>
-    <li>Finish writing and modifying the tests for the URL builder.</li>
+    <li>Fill out the tests for the URL builder to test our new defaults.
+        Use the mock as necessary.</li>
   </ul>
 </div>
+
+#### Solution
+```python
+# TODO Write me!
+```
 
 [Home](index.html)
