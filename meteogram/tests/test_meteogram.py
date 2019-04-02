@@ -6,6 +6,25 @@ from meteogram import meteogram
 
 
 #
+# Example starter test
+#
+def test_degF_to_degC_at_freezing():
+    """
+    Test if celsius conversion is correct at freezing.
+    """
+    # Setup
+    freezing_degF = 32.0
+    freezing_degC = 0.0
+
+    # Exercise
+    result = meteogram.degF_to_degC(freezing_degF)
+
+    # Verify
+    assert result == freezing_degC
+
+    # Cleanup
+
+#
 # Instructor led introductory examples
 #
 

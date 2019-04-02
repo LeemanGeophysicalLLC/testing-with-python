@@ -10,6 +10,22 @@ from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
 
 
+def degF_to_degC(degF):
+    """
+    Convert degF to degC.
+
+    Parameters
+    ----------
+    degF : float
+        Temperature in Fahrenheit.
+
+    Returns
+    -------
+    Temperature in Celsius
+
+    """
+    return (degF - 32) * (5 / 9)
+
 def current_utc_time():
     """
     Return the current UTC date and time.
