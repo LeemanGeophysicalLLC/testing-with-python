@@ -31,7 +31,7 @@ def test_plotting_meteogram_defaults():
 
 
     # Exercise
-    fig, _, _ = meteogram.plot_meteogram(df)
+    fig, _, _, _ = meteogram.plot_meteogram(df)
 
     # Verify - Done by decorator when run with -mpl flag
 
@@ -78,7 +78,7 @@ def test_plotting_meteogram_direction_fiducials():
 
 
     # Exercise
-    fig, _, _ = meteogram.plot_meteogram(df, direction_markers=True)
+    fig, _, _, _ = meteogram.plot_meteogram(df, direction_markers=True)
 
     # Verify - Done by decorator when run with -mpl flag
 
@@ -267,6 +267,138 @@ def test_build_asos_request_url(start, end, station, expected):
 
     # Verify
     assert url == expected
+
+    # Cleanup - none necessary
+```
+
+## Recording URL Requests
+We're still making url requests in a couple of tests and we would rather not
+for reasons we're already discussed.
+
+* Add to `testing.py` in the meteogram directory.
+
+```python
+import os.path
+
+import vcr
+
+
+def get_recorder(test_file_path):
+    """Return an appropriate response recorder for the given path."""
+    return vcr.VCR(cassette_library_dir=os.path.join(os.path.dirname(test_file_path),
+                                                     'fixtures'))
+```
+
+* Modify any functions calling out with the recorder.
+
+```python
+@recorder.use_cassette('ASOS_AMW_2018032512_2018032612')
+@patch('meteogram.meteogram.current_utc_time', new=mocked_current_utc_time)
+def test_download_asos_data():
+    """Test downloading ASOS data."""
+    # Setup
+    url = meteogram.build_asos_request_url('AMW')
+
+    # Exercise
+    df = meteogram.download_asos_data(url)
+
+    # Verify
+    first_row_truth = pd.Series(
+                      {'station_id': 'AMW',
+                       'station_name': 'Ames',
+                       'latitude_deg': 41.990439,
+                       'longitude_deg': -93.618515,
+                       'UTC': pd.Timestamp('2018-03-25 12:00:00'),
+                       'temperature_degF': 29,
+                       'dewpoint_degF': 24,
+                       'wind_speed_knots': 8,
+                       'wind_direction_degrees': 113})
+
+    assert_dataseries_equal(df.iloc[0], first_row_truth)
+
+    # Cleanup - none necessary
+```
+
+* Run the test suite and observe the creation of the fixture.
+
+<div class="alert alert-success">
+<b>Exercise</b>
+  <ul>
+    <li>Write a test using a cassette to check the behavior when we request
+        data that are in the future. (Currently no error will be raised and
+        we will say that we've decided that is acceptable behavior.)</li>
+    <li>Write a test using a cassette to check the behavior when we request
+        data, but mix up the start and end dates. (Currently no error will be
+        raised and we will say that we've decided that is acceptable behavior.)
+  </ul>
+</div>
+
+#### Solution
+```python
+@recorder.use_cassette('ASOS_AMW_Future')
+def test_download_asos_data_in_future():
+    """Test for correct behavior when asking for non-existant (future) data."""
+    # Setup
+    url = meteogram.build_asos_request_url('AMW',
+                                           datetime.datetime(2999, 10, 10, 10),
+                                           datetime.datetime(2999, 11, 10, 10))
+
+    # Exercise
+    df = meteogram.download_asos_data(url)
+
+    # Verify
+    assert df.empty
+
+    # Cleanup - none necessary
+
+
+@recorder.use_cassette('ASOS_AMW_Reversed_Dates')
+def test_download_asos_data_start_after_end():
+    """Test for correct behavior when start and end times are reversed."""
+    # Setup
+    start = datetime.datetime(2018, 8, 1, 12)
+    end = datetime.datetime(2018, 7, 1, 12)
+    url = meteogram.build_asos_request_url('AMW', start, end)
+
+    # Exercise
+    df = meteogram.download_asos_data(url)
+
+    # Verify
+    assert df.empty
+
+    # Cleanup - none necessary
+```
+
+## Checking for Raised Errors
+In retrospect, silently returning nothing when the user switches the start
+and end dates seems like poor behavior and we should warn them that they are
+making a malformed request. We would typically do that by raising an exception.
+
+#### Instructor Code
+Modify the `build_asos_request_url` function to raise an error when the dates
+are switched (put right above string building):
+
+```python
+# Make sure the starting and ending dates are not reversed
+if start_date > end_date:
+    raise ValueError('Unknown option for direction: {0}'.format(str(direction)))
+```
+
+Now we need to change our test to verify that the `ValueError` is raised. Don't
+forget to remove the now unused fixture.
+
+```python
+@recorder.use_cassette('ASOS_AMW_Reversed_Dates')
+def test_download_asos_data_start_after_end():
+    """Test for correct behavior when start and end times are reversed."""
+    # Setup
+    start = datetime.datetime(2018, 8, 1, 12)
+    end = datetime.datetime(2018, 7, 1, 12)
+    url = meteogram.build_asos_request_url('AMW', start, end)
+
+    # Exercise/Verify
+    with pytest.raises(ValueError):
+        meteogram.download_asos_data(url)
 
     # Cleanup - none necessary
 ```

@@ -14,7 +14,8 @@ command line.
 
 * Open a terminal (or Anaconda Prompt)
 * Navigate to the root directory of the repository.
-* Run `pytest --cov=meteogram meteogram/tests/` from the meteogram directory.
+* Run `pytest --cov-report term-missing --cov=meteogram tests/` from
+  the meteogram directory.
 
 <div class="alert alert-success">
 <b>Exercise 4</b>
