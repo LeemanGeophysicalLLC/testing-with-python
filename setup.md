@@ -52,6 +52,14 @@ This is a good problem to test because it provides the following test scenarios:
 * Array comparison
 * Image comparison
 
+## Install Example Library
+We need to install an editable instance of our meteogram library. To do so,
+navigate to the top level of the repository and run the following:
+
+```
+pip install -e .
+```
+
 ## Wrap Up
 * What questions do you have before we get started?
 
