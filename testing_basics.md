@@ -137,7 +137,8 @@ def test_title_case():
   <ul>
     <li>Fill out the tests for the url builder function using what you know
     about string comparisons. The test names are descriptive enough that you
-    already know what to do!</li>
+    already know what to do! If you don't know any station names, FSD, MLI,
+    and AMW are a few you can choose from.</li>
   </ul>
 </div>
 
