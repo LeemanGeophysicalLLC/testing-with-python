@@ -2,6 +2,7 @@
 
 import datetime
 import urllib
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from pandas.plotting import register_matplotlib_converters
@@ -38,7 +39,7 @@ def current_utc_time():
     return datetime.datetime.utcnow()
 
 
-def build_asos_request_url(station, start_date, end_date):
+def build_asos_request_url(station, start_date=None, end_date=None):
     """
     Create a URL to request ASOS data from the Iowa State archive.
 
@@ -55,6 +56,14 @@ def build_asos_request_url(station, start_date, end_date):
     -------
     str: URL of the data
     """
+
+    # If there is no ending date specified, use the current date and time
+    if end_date is None:
+        end_date = current_utc_time()
+
+    # If there is no starting date specified, use 24 hours before the ending date and time
+    if start_date is None:
+        start_date = end_date - datetime.timedelta(hours=24)
 
     url_str = (f'https://mesonet.agron.iastate.edu/request/asos/1min_dl.php?station%5B%5D='
                f'{station}&tz=UTC&year1={start_date:%Y}&month1={start_date:%m}&day1'
@@ -95,7 +104,7 @@ def download_asos_data(url):
     return df
 
 
-def plot_meteogram(df):
+def plot_meteogram(df, direction_markers=False):
     """
     Plot a meteogram with matplotlib.
 
@@ -109,29 +118,59 @@ def plot_meteogram(df):
     TODO
     """
     fig = plt.figure(figsize=(10, 5))
-    ax1 = plt.subplot(2, 1, 1)
-    ax2 = plt.subplot(2, 1, 2, sharex=ax1)
-    ax2b = ax2.twinx()
+    #ax1 = plt.subplot(2, 1, 1)
+    #ax2 = plt.subplot(2, 1, 2, sharex=ax1)
+    #ax2b = ax2.twinx()
+    #
+    # temperature_ymin = min([df['temperature_degF'].min(), df['dewpoint_degF'].min()]) - 5
+    # temperature_ymax = max([df['temperature_degF'].max(), df['dewpoint_degF'].max()]) + 5
+    #
+    # ax1.fill_between(df['UTC'], df['temperature_degF'], temperature_ymin, color='tab:red')
+    # ax1.fill_between(df['UTC'], df['dewpoint_degF'], temperature_ymin, color='tab:green')
+    # ax2.fill_between(df['UTC'], df['wind_speed_knots'], df['wind_speed_knots'].min() - 5, color='tab:blue')
+    # ax2b.scatter(df['UTC'], df['wind_direction_degrees'], edgecolor='tab:olive', color='None')
+    #
+    # # Set limits
+    # ax1.set_xlim(df['UTC'].min(), df['UTC'].max())
+    # ax1.set_ylim(temperature_ymin, temperature_ymax)
+    # ax2.set_ylim(df['wind_speed_knots'].min() - 5, df['wind_speed_knots'].max() + 5)
+    # ax2b.set_ylim(-10, 370)  # Wind Direction with a bit of padding
+    #
+    # # Add some labels
+    # label_fontsize = 14
+    # ax2.set_xlabel('Observation Time', fontsize=label_fontsize)
+    # ax1.set_ylabel(u'\N{DEGREE SIGN}F', fontsize=label_fontsize)
+    # ax2.set_ylabel('Knots', fontsize=label_fontsize)
+    # ax2b.set_ylabel('Degrees', fontsize=label_fontsize)
+    #
+    # # Add direction lines if requested
+    # if direction_markers:
+    #     for value_degrees in [0, 90, 180, 270]:
+    #         ax2b.axhline(y=value_degrees, color='k', linestyle='--', linewidth=0.25)
 
-    temperature_ymin = min([df['temperature_degF'].min(), df['dewpoint_degF'].min()]) - 5
-    temperature_ymax = max([df['temperature_degF'].max(), df['dewpoint_degF'].max()]) + 5
+    # return fig, ax1, ax2
 
-    ax1.fill_between(df['UTC'], df['temperature_degF'], temperature_ymin, color='tab:red')
-    ax1.fill_between(df['UTC'], df['dewpoint_degF'], temperature_ymin, color='tab:green')
-    ax2.fill_between(df['UTC'], df['wind_speed_knots'], df['wind_speed_knots'].min() - 5, color='tab:blue')
-    ax2b.scatter(df['UTC'], df['wind_direction_degrees'], edgecolor='tab:olive', color='None')
 
-    # Set limits
-    ax1.set_xlim(df['UTC'].min(), df['UTC'].max())
-    ax1.set_ylim(temperature_ymin, temperature_ymax)
-    ax2.set_ylim(df['wind_speed_knots'].min() - 5, df['wind_speed_knots'].max() + 5)
-    ax2b.set_ylim(-10, 370)  # Wind Direction with a bit of padding
+def wind_components(speed, direction):
+    """
+    Calculate the U, V wind vector components from the speed and direction.
 
-    # Add some labels
-    label_fontsize = 14
-    ax2.set_xlabel('Observation Time', fontsize=label_fontsize)
-    ax1.set_ylabel(u'\N{DEGREE SIGN}F', fontsize=label_fontsize)
-    ax2.set_ylabel('Knots', fontsize=label_fontsize)
-    ax2b.set_ylabel('Degrees', fontsize=label_fontsize)
+    Parameters
+    ----------
+    speed : array_like
+        The wind speed (magnitude)
+    wdir : array_like
+        The wind direction, specified as the direction from which the wind is
+        blowing (0-360 degrees), with 360 degrees being North.
 
-    return fig, ax1, ax2
+    Returns
+    -------
+    u, v : tuple of array_like
+        The wind components in the X (East-West) and Y (North-South)
+        directions, respectively.
+
+    """
+    direction = np.radians(direction)
+    u = -speed * np.sin(direction)
+    v = -speed * np.cos(direction)
+    return u, v
