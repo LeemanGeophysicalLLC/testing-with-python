@@ -262,7 +262,7 @@ def test_floating_subtraction():
   <ul>
     <li>Add a function to the library to calculate the vector components u, v
         of wind given a windspeed and direction.</li>
-    <li>Write tests to verify proper behavior for directions of 0, 180, 360, and
+    <li>Write tests to verify proper behavior for directions of 0, 45, 360, and
         for a windspeed of zero.</li>
   </ul>
 </div>
