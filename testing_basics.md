@@ -236,11 +236,11 @@ def test_floating_subtraction():
 
 That would result in too much logic and duplicated code in our tests and seems
 like a solved problem right? Numpy has a testing helper for exactly this:
-`np.testing.assert_almost_equal`.
+`numpy.testing.assert_almost_equal`.
 
 Now our test can simplify to:
 ```python
-from np.testing import assert_almost_equal
+from numpy.testing import assert_almost_equal
 
 
 def test_floating_subtraction():
