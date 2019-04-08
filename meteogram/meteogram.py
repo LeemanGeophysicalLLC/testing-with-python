@@ -65,6 +65,10 @@ def build_asos_request_url(station, start_date=None, end_date=None):
     if start_date is None:
         start_date = end_date - datetime.timedelta(hours=24)
 
+    # Make sure the starting and ending dates are not reversed
+    if start_date > end_date:
+        raise ValueError('Unknown option for direction: {0}'.format(str(direction)))
+
     url_str = (f'https://mesonet.agron.iastate.edu/request/asos/1min_dl.php?station%5B%5D='
                f'{station}&tz=UTC&year1={start_date:%Y}&month1={start_date:%m}&day1'
                f'={start_date:%d}&hour1={start_date:%H}&minute1={start_date:%M}&year2={end_date:%Y}&month2='
@@ -115,40 +119,41 @@ def plot_meteogram(df, direction_markers=False):
 
     Returns
     -------
-    TODO
+    matplotlib.figure.Figure, matplotlib.axes._subplots.AxesSubplot,
+    matplotlib.axes._subplots.AxesSubplot, matplotlib.axes._subplots.AxesSubplot
     """
     fig = plt.figure(figsize=(10, 5))
-    #ax1 = plt.subplot(2, 1, 1)
-    #ax2 = plt.subplot(2, 1, 2, sharex=ax1)
-    #ax2b = ax2.twinx()
-    #
-    # temperature_ymin = min([df['temperature_degF'].min(), df['dewpoint_degF'].min()]) - 5
-    # temperature_ymax = max([df['temperature_degF'].max(), df['dewpoint_degF'].max()]) + 5
-    #
-    # ax1.fill_between(df['UTC'], df['temperature_degF'], temperature_ymin, color='tab:red')
-    # ax1.fill_between(df['UTC'], df['dewpoint_degF'], temperature_ymin, color='tab:green')
-    # ax2.fill_between(df['UTC'], df['wind_speed_knots'], df['wind_speed_knots'].min() - 5, color='tab:blue')
-    # ax2b.scatter(df['UTC'], df['wind_direction_degrees'], edgecolor='tab:olive', color='None')
-    #
-    # # Set limits
-    # ax1.set_xlim(df['UTC'].min(), df['UTC'].max())
-    # ax1.set_ylim(temperature_ymin, temperature_ymax)
-    # ax2.set_ylim(df['wind_speed_knots'].min() - 5, df['wind_speed_knots'].max() + 5)
-    # ax2b.set_ylim(-10, 370)  # Wind Direction with a bit of padding
-    #
-    # # Add some labels
-    # label_fontsize = 14
-    # ax2.set_xlabel('Observation Time', fontsize=label_fontsize)
-    # ax1.set_ylabel(u'\N{DEGREE SIGN}F', fontsize=label_fontsize)
-    # ax2.set_ylabel('Knots', fontsize=label_fontsize)
-    # ax2b.set_ylabel('Degrees', fontsize=label_fontsize)
-    #
-    # # Add direction lines if requested
-    # if direction_markers:
-    #     for value_degrees in [0, 90, 180, 270]:
-    #         ax2b.axhline(y=value_degrees, color='k', linestyle='--', linewidth=0.25)
+    ax1 = plt.subplot(2, 1, 1)
+    ax2 = plt.subplot(2, 1, 2, sharex=ax1)
+    ax2b = ax2.twinx()
 
-    # return fig, ax1, ax2
+    temperature_ymin = min([df['temperature_degF'].min(), df['dewpoint_degF'].min()]) - 5
+    temperature_ymax = max([df['temperature_degF'].max(), df['dewpoint_degF'].max()]) + 5
+
+    ax1.fill_between(df['UTC'], df['temperature_degF'], temperature_ymin, color='tab:red')
+    ax1.fill_between(df['UTC'], df['dewpoint_degF'], temperature_ymin, color='tab:green')
+    ax2.fill_between(df['UTC'], df['wind_speed_knots'], df['wind_speed_knots'].min() - 5, color='tab:blue')
+    ax2b.scatter(df['UTC'], df['wind_direction_degrees'], edgecolor='tab:olive', color='None')
+
+    # Set limits
+    ax1.set_xlim(df['UTC'].min(), df['UTC'].max())
+    ax1.set_ylim(temperature_ymin, temperature_ymax)
+    ax2.set_ylim(df['wind_speed_knots'].min() - 5, df['wind_speed_knots'].max() + 5)
+    ax2b.set_ylim(-10, 370)  # Wind Direction with a bit of padding
+
+    # Add some labels
+    label_fontsize = 14
+    ax2.set_xlabel('Observation Time', fontsize=label_fontsize)
+    ax1.set_ylabel(u'\N{DEGREE SIGN}F', fontsize=label_fontsize)
+    ax2.set_ylabel('Knots', fontsize=label_fontsize)
+    ax2b.set_ylabel('Degrees', fontsize=label_fontsize)
+
+    # Add direction lines if requested
+    if direction_markers:
+        for value_degrees in [0, 90, 180, 270]:
+            ax2b.axhline(y=value_degrees, color='k', linestyle='--', linewidth=0.25)
+
+    return fig, ax1, ax2, ax2b
 
 
 def wind_components(speed, direction):

@@ -24,7 +24,7 @@ def load_example_asos():
     Fixture to load example data from a csv file for testing.
     """
     example_data_path = os.path.abspath(os.path.join('..', 'staticdata'))
-    example_data_path = '/Users/johnleeman/gitrepos/testing-with-python/staticdata'
+    #`example_data_path = '/Users/johnleeman/gitrepos/testing-with-python/staticdata'
     data_path = os.path.join(example_data_path, 'AMW_example_data.csv')
     return meteogram.download_asos_data(data_path)
 
@@ -148,32 +148,32 @@ def test_plotting_meteogram_defaults(load_example_asos):
 
 
     # Exercise
-    fig, _, _ = meteogram.plot_meteogram(df)
+    fig, _, _, _ = meteogram.plot_meteogram(df)
 
     # Verify - Done by decorator when run with -mpl flag
 
     # Cleanup - none necessary
 
-    #return fig
+    return fig
 
 #
 # Exercise 5 - Modify plotting routine and add tests
 #
-# @pytest.mark.mpl_image_compare(remove_text=True)
-# def test_plotting_meteogram_direction_fiducials(load_example_asos):
-#     """Test meteogram plotting with fiducial lines."""
-#     # Setup
-#     df = load_example_asos
-#
-#
-#     # Exercise
-#     fig, _, _ = meteogram.plot_meteogram(df, direction_markers=True)
-#
-#     # Verify - Done by decorator when run with -mpl flag
-#
-#     # Cleanup - none necessary
-#
-#     return fig
+@pytest.mark.mpl_image_compare(remove_text=True)
+def test_plotting_meteogram_direction_fiducials(load_example_asos):
+    """Test meteogram plotting with fiducial lines."""
+    # Setup
+    df = load_example_asos
+
+
+    # Exercise
+    fig, _, _, _ = meteogram.plot_meteogram(df, direction_markers=True)
+
+    # Verify - Done by decorator when run with -mpl flag
+
+    # Cleanup - none necessary
+
+    return fig
 
 
 #
@@ -245,16 +245,9 @@ def test_build_asos_request_url(start, end, station, expected):
 # Exercise 6 - Stop Here
 #
 
-#
-# Exercise 7 - Make a fixture for testing calculations
-#
 
 #
-# Exercise 7 - Stop Here
-#
-
-#
-# Exercise 8 - vcrpy, use it to record responses to data gathering tests.
+# Exercise 7 - vcrpy, use it to record responses to data gathering tests.
 #              modify the code already written above.
 #
 
