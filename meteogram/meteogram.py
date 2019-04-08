@@ -39,6 +39,58 @@ def current_utc_time():
     return datetime.datetime.utcnow()
 
 
+def potential_temperature(pressure, temperature):
+    """Calculate the potential temperature.
+
+    Uses the Poisson equation to calculation the potential temperature
+    given `pressure` and `temperature`.
+
+    Parameters
+    ----------
+    pressure
+        The total atmospheric pressure
+    temperature
+        The temperature in kelvin
+
+    Returns
+    -------
+    The potential temperature corresponding to the temperature and
+    pressure.
+
+    Notes
+    -----
+    Formula:
+
+    .. math:: \Theta = T (P_0 / P)^\kappa
+
+    For inputs of 800 hPa and 273 Kelvin, output should be 290.96 K
+
+    """
+    return temperature / exner_function(pressure)
+
+
+def exner_function(pressure, reference_pressure=1000):
+    r"""Calculate the Exner function.
+    .. math:: \Pi = \left( \frac{p}{p_0} \right)^\kappa
+    This can be used to calculate potential temperature from temperature (and visa-versa),
+    since
+    .. math:: \Pi = \frac{T}{\theta}
+
+    Parameters
+    ----------
+    pressure
+        The total atmospheric pressure
+    reference_pressure : `pint.Quantity`, optional
+        The reference pressure against which to calculate the Exner function, defaults to 1000 hPa
+
+    Returns
+    -------
+    The value of the Exner function at the given pressure.
+
+    """
+    return (pressure / reference_pressure)**0.28562982892500527
+
+
 def build_asos_request_url(station, start_date=None, end_date=None):
     """
     Create a URL to request ASOS data from the Iowa State archive.
