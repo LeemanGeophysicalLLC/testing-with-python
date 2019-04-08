@@ -119,15 +119,15 @@ Comparing strings is done with a simple equality check.
 
 ```python
 def test_title_case():
-  # Setup
-  input = 'this is a test string'
-  desired = 'This Is A Test String'
+    # Setup
+    input = 'this is a test string'
+    desired = 'This Is A Test String'
 
-  # Exercise
-  actual = input.title()
+    # Exercise
+    actual = input.title()
 
-  # Verify
-  assert actual==desired
+    # Verify
+    assert actual==desired
 
   # Cleanup
 ```
@@ -143,7 +143,50 @@ def test_title_case():
 
 #### Solution
 ```python
-# TODO Write me!
+def test_build_asos_request_url_single_digit_datetimes():
+    """
+    Test building URL with single digit month and day.
+    """
+    # Setup
+    start = datetime.datetime(2018, 1, 5, 1)
+    end = datetime.datetime(2018, 1, 9, 1)
+    station = 'FSD'
+
+    # Exercise
+    result_url = meteogram.build_asos_request_url(station, start, end)
+
+    # Verify
+    truth_url = ('https://mesonet.agron.iastate.edu/request/asos/1min_dl.php?'
+                 'station%5B%5D=FSD&tz=UTC&year1=2018&month1=01&day1=05&hour1=01'
+                 '&minute1=00&year2=2018&month2=01&day2=09&hour2=01&minute2=00&'
+                 'vars%5B%5D=tmpf&vars%5B%5D=dwpf&vars%5B%5D=sknt&vars%5B%5D=drct&'
+                 'sample=1min&what=view&delim=comma&gis=yes')
+    assert result_url == truth_url
+
+    # Cleanup - none necessary
+
+
+def test_build_asos_request_url_double_digit_datetimes():
+    """
+    Test building URL with double digit month and day.
+    """
+    # Setup
+    start = datetime.datetime(2018, 10, 11, 12)
+    end = datetime.datetime(2018, 10, 16, 15)
+    station = 'MLI'
+
+    # Exercise
+    result_url = meteogram.build_asos_request_url(station, start, end)
+
+    # Verify
+    truth_url = ('https://mesonet.agron.iastate.edu/request/asos/1min_dl.php?'
+                 'station%5B%5D=MLI&tz=UTC&year1=2018&month1=10&day1=11&hour1=12'
+                 '&minute1=00&year2=2018&month2=10&day2=16&hour2=15&minute2=00&'
+                 'vars%5B%5D=tmpf&vars%5B%5D=dwpf&vars%5B%5D=sknt&vars%5B%5D=drct&'
+                 'sample=1min&what=view&delim=comma&gis=yes')
+    assert result_url == truth_url
+
+    # Cleanup - none necessary
 ```
 
 ### Numerical Comparison
@@ -210,7 +253,7 @@ def test_floating_subtraction():
     # Verify
     assert_almost_equal(actual, desired)
 
-    # Cleanup - automatically garbage collected
+    # Cleanup - none necessary
 ```
 
 <div class="alert alert-success">
@@ -225,8 +268,94 @@ def test_floating_subtraction():
 
 #### Solution
 ```python
-# TODO Write me!
+def wind_components(speed, direction):
+    """
+    Calculate the U, V wind vector components from the speed and direction.
+
+    Parameters
+    ----------
+    speed : array_like
+        The wind speed (magnitude)
+    wdir : array_like
+        The wind direction, specified as the direction from which the wind is
+        blowing (0-360 degrees), with 360 degrees being North.
+
+    Returns
+    -------
+    u, v : tuple of array_like
+        The wind components in the X (East-West) and Y (North-South)
+        directions, respectively.
+
+    """
+    direction = np.radians(direction)
+    u = -speed * np.sin(direction)
+    v = -speed * np.cos(direction)
+    return u, v
+
 ```
+
+```python
+def test_wind_components_north():
+    # Setup
+    speed = 10
+    direction = 0
+
+    # Exercise
+    u, v = meteogram.wind_components(speed, direction)
+
+    # Verify
+    true_u = 0
+    true_v = -10
+    assert_almost_equal(u, true_u)
+    assert_almost_equal(v, true_v)
+
+def test_wind_components_northeast():
+    # Setup
+    speed = 10
+    direction = 45
+
+    # Exercise
+    u, v = meteogram.wind_components(speed, direction)
+
+    # Verify
+    true_u = -7.0710
+    true_v = -7.0710
+    assert_almost_equal(u, true_u, 3)
+    assert_almost_equal(v, true_v, 3)
+
+
+def test_wind_components_threesixty():
+    # Setup
+    speed = 10
+    direction = 360
+
+    # Exercise
+    u, v = meteogram.wind_components(speed, direction)
+
+    # Verify
+    true_u = 0
+    true_v = -10
+    assert_almost_equal(u, true_u)
+    assert_almost_equal(v, true_v)
+
+
+def test_wind_components_zero_wind():
+    # Setup
+    speed = 0
+    direction = 45
+
+    # Exercise
+    u, v = meteogram.wind_components(speed, direction)
+
+    # Verify
+    true_u = 0
+    true_v = 0
+    assert_almost_equal(u, true_u)
+    assert_almost_equal(v, true_v)
+
+    # Cleanup
+```
+
 
 ### Array Comparison
 
@@ -245,7 +374,24 @@ cleanup our tests we just wrote.
 
 #### Instructor Code
 ```python
-# TODO Write me!
+from numpy.testing import assert_almost_equal, assert_array_almost_equal
+
+
+def test_wind_components():
+    # Setup
+    speed = np.array([10, 10, 10, 0])
+    direction = np.array([0, 45, 360, 45])
+
+    # Exercise
+    u, v = meteogram.wind_components(speed, direction)
+
+    # Verify
+    true_u = np.array([0, -7.0710, 0, 0])
+    true_v = np.array([-10, -7.0710, -10, 0])
+    assert_array_almost_equal(u, true_u, 3)
+    assert_array_almost_equal(v, true_v, 3)
+
+    # Cleanup
 ```
 
 ### Mocking out functions
@@ -255,13 +401,14 @@ Let's modify the url builder again!
 * Add logic for what to do when they are none.
 
 ```python
-# If there is no ending date specified, use the current date and time
-  if end_date is None:
-      end_date = current_utc_time()
+def build_asos_request_url(station, start_date=None, end_date=None):
+    # If there is no ending date specified, use the current date and time
+    if end_date is None:
+        end_date = current_utc_time()
 
-  # If there is no starting date specified, use 24 hours before the ending date and time
-  if start_date is None:
-      start_date = end_date - datetime.timedelta(hours=24)
+    # If there is no starting date specified, use 24 hours before the ending date and time
+    if start_date is None:
+        start_date = end_date - datetime.timedelta(hours=24)
 ```
 
 * What problems will we run into when trying to test this?
@@ -279,7 +426,20 @@ def mocked_current_utc_time():
 
 ```python
 @patch('meteogram.meteogram.current_utc_time', new=mocked_current_utc_time)
-def test_the_thing():
+def test_that_mock_works():
+    """
+    Test if we really know how to use a mock.
+    """
+    # Setup - None
+
+    # Exercise
+    result = meteogram.current_utc_time()
+
+    # Verify
+    truth = datetime.datetime(2018, 3, 26, 12)
+    assert result==truth
+
+    # Cleanup - none required
 ```
 
 <div class="alert alert-success">
@@ -292,7 +452,69 @@ def test_the_thing():
 
 #### Solution
 ```python
-# TODO Write me!
+@patch('meteogram.meteogram.current_utc_time', new=mocked_current_utc_time)
+def test_build_asos_request_url_defaults():
+    """
+    Test building URL with all defaults.
+    """
+    # Setup - none required
+
+    # Exercise
+    url = meteogram.build_asos_request_url('MLI')
+
+    # Verify
+    truth = ('https://mesonet.agron.iastate.edu/request/asos/1min_dl.php?'
+             'station%5B%5D=MLI&tz=UTC&year1=2018&month1=03&day1=25&hour1=12'
+             '&minute1=00&year2=2018&month2=03&day2=26&hour2=12&minute2=00&'
+             'vars%5B%5D=tmpf&vars%5B%5D=dwpf&vars%5B%5D=sknt&vars%5B%5D=drct'
+             '&sample=1min&what=view&delim=comma&gis=yes')
+    assert url==truth
+
+    # Cleanup - none required
+
+
+@patch('meteogram.meteogram.current_utc_time', new=mocked_current_utc_time)
+def test_build_asos_request_url_default_start_only():
+    """
+    Test building URL with default start date.
+    """
+    # Setup
+    end_date = datetime.datetime(2019, 3, 25, 12)
+
+    # Exercise
+    url = meteogram.build_asos_request_url('MLI', end_date=end_date)
+
+    # Verify
+    truth = ('https://mesonet.agron.iastate.edu/request/asos/1min_dl.php?'
+             'station%5B%5D=MLI&tz=UTC&year1=2019&month1=03&day1=24&hour1=12'
+             '&minute1=00&year2=2019&month2=03&day2=25&hour2=12&minute2=00&'
+             'vars%5B%5D=tmpf&vars%5B%5D=dwpf&vars%5B%5D=sknt&vars%5B%5D=drct'
+             '&sample=1min&what=view&delim=comma&gis=yes')
+    assert url==truth
+
+    # Cleanup - none required
+
+
+@patch('meteogram.meteogram.current_utc_time', new=mocked_current_utc_time)
+def test_build_asos_request_url_default_end_only():
+    """
+    Test building URL with default end date.
+    """
+    # Setup
+    start_date = datetime.datetime(2018, 3, 24, 12)
+
+    # Exercise
+    url = meteogram.build_asos_request_url('MLI', start_date=start_date)
+
+    # Verify
+    truth = ('https://mesonet.agron.iastate.edu/request/asos/1min_dl.php?'
+             'station%5B%5D=MLI&tz=UTC&year1=2018&month1=03&day1=24&hour1=12'
+             '&minute1=00&year2=2018&month2=03&day2=26&hour2=12&minute2=00&'
+             'vars%5B%5D=tmpf&vars%5B%5D=dwpf&vars%5B%5D=sknt&vars%5B%5D=drct'
+             '&sample=1min&what=view&delim=comma&gis=yes')
+    assert url==truth
+
+    # Cleanup - none required
 ```
 
 [Home](index.html)

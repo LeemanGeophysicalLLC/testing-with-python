@@ -17,8 +17,31 @@ we will compare against.
 * We then run the test function and store the output in a baselines directory
   in our tests directory.
 
+#### Instructor Code
+
+```python
+@pytest.mark.mpl_image_compare(remove_text=True)
+def test_plotting_meteogram_defaults():
+    """Test default meteogram plotting."""
+    # Setup
+    url = meteogram.build_asos_request_url('AMW',
+                                           start_date=datetime.datetime(2018, 3, 26),
+                                           end_date=datetime.datetime(2018, 3, 27))
+    df = meteogram.download_asos_data(url)
+
+
+    # Exercise
+    fig, _, _ = meteogram.plot_meteogram(df)
+
+    # Verify - Done by decorator when run with -mpl flag
+
+    # Cleanup - none necessary
+
+    return fig
 ```
-pytest -k test_func_name --mpl-generate-path=tests/baseline
+
+```
+pytest -k test_plotting_meteogram_defaults --mpl-generate-path=tests/baseline
 ```
 
 * Run the test with our nominal suite as `pytest --mpl`
@@ -27,11 +50,108 @@ pytest -k test_func_name --mpl-generate-path=tests/baseline
 <b>Exercise 5</b>
   <ul>
     <li>Modify the plotting function such that it has a keyword argument
-    to plot horizontal lines (dashed) at N, S, E, W wind directions.</li>
+    to plot horizontal lines (dashed) at N, S, E, W wind directions.
+    This keyword argument should default to false.</li>
     <li>Create a new image test, baseline image, and make sure the test suite
     passes.</li>
   </ul>
 </div>
+
+#### Solution
+
+```python
+# Add direction lines if requested
+    if direction_markers:
+        for value_degrees in [0, 90, 180, 270]:
+            ax2b.axhline(y=value_degrees, color='k', linestyle='--', linewidth=0.25)
+```
+
+```python
+@pytest.mark.mpl_image_compare(remove_text=True)
+def test_plotting_meteogram_direction_fiducials():
+    """Test meteogram plotting with fiducial lines."""
+    # Setup
+    url = meteogram.build_asos_request_url('AMW',
+                                           start_date=datetime.datetime(2018, 3, 26),
+                                           end_date=datetime.datetime(2018, 3, 27))
+    df = meteogram.download_asos_data(url)
+
+
+    # Exercise
+    fig, _, _ = meteogram.plot_meteogram(df, direction_markers=True)
+
+    # Verify - Done by decorator when run with -mpl flag
+
+    # Cleanup - none necessary
+
+    return fig
+```
+
+## Test Fixtures
+Test fixtures are a good way to encapsulate data or setup needs that are used
+for multiple tests. We've got plotting tests that we just wrote that are
+currently making calls to the web to get plotting data. That isn't great as
+we are depending on external contact. What if a server goes down, what if the
+tests are run on a machine with no network connection, what if we don't want to
+make API calls because they are expensive? Let's make this a fixture instead.
+
+
+Make the fixture by downloading the data for a `staticdata` directory in the
+top level of the repo. Data are [here](https://mesonet.agron.iastate.edu/request/asos/1min_dl.php?station%5B%5D=AMW&tz=UTC&year1=2018&month1=03&day1=26&hour1=00&minute1=00&year2=2018&month2=03&day2=27&hour2=00&minute2=00&vars%5B%5D=tmpf&vars%5B%5D=dwpf&vars%5B%5D=sknt&vars%5B%5D=drct&sample=1min&what=view&delim=comma&gis=yes).
+
+```python
+import os
+
+@pytest.fixture
+def load_example_asos():
+    """
+    Fixture to load example data from a csv file for testing.
+    """
+    example_data_path = os.path.abspath(os.path.join('..', 'staticdata'))
+    data_path = os.path.join(example_data_path, 'AMW_example_data.csv')
+    return meteogram.download_asos_data(data_path)
+```
+
+Modify the test functions to use our fixture.
+
+```python
+@pytest.mark.mpl_image_compare(remove_text=True)
+def test_plotting_meteogram_defaults(load_example_asos):
+    """Test default meteogram plotting."""
+    # Setup
+    df = load_example_asos
+
+
+    # Exercise
+    fig, _, _ = meteogram.plot_meteogram(df)
+
+    # Verify - Done by decorator when run with -mpl flag
+
+    # Cleanup - none necessary
+
+    return fig
+
+#
+# Exercise 5 - Modify plotting routine and add tests
+#
+@pytest.mark.mpl_image_compare(remove_text=True)
+def test_plotting_meteogram_direction_fiducials(load_example_asos):
+    """Test meteogram plotting with fiducial lines."""
+    # Setup
+    df = load_example_asos
+
+
+    # Exercise
+    fig, _, _ = meteogram.plot_meteogram(df, direction_markers=True)
+
+    # Verify - Done by decorator when run with -mpl flag
+
+    # Cleanup - none necessary
+
+    return fig
+
+```
+
 
 ## Test Parameterization
 Parameterizing tests is a good way to run the same test multiple times with
@@ -52,7 +172,31 @@ modifying a single test.
 
 #### Instructor Written Code
 ```python
-# TODO Write me!
+@pytest.mark.parametrize('start, end, station, expected', [
+    # Single Digit Datetimes
+    (datetime.datetime(2018, 1, 5, 1), datetime.datetime(2018, 1, 9, 1),
+     'FSD',
+     'https://mesonet.agron.iastate.edu/request/asos/1min_dl.php?'
+     'station%5B%5D=FSD&tz=UTC&year1=2018&month1=01&day1=05&hour1=01'
+     '&minute1=00&year2=2018&month2=01&day2=09&hour2=01&minute2=00&'
+     'vars%5B%5D=tmpf&vars%5B%5D=dwpf&vars%5B%5D=sknt&vars%5B%5D=drct&'
+     'sample=1min&what=view&delim=comma&gis=yes')
+     ])
+@patch('meteogram.meteogram.current_utc_time', new=mocked_current_utc_time)
+def test_build_asos_request_url(start, end, station, expected):
+   """
+   Test URL building for requests.
+   """
+   # Setup - Done by parameterized fixture
+
+   # Exercise
+   url = meteogram.build_asos_request_url(station, start, end)
+
+   # Verify
+   assert url == expected
+
+   # Cleanup - none necessary
+
 ```
 
 <div class="alert alert-success">
@@ -65,25 +209,66 @@ modifying a single test.
 
 #### Solution
 ```python
-# TODO Write me!
-```
+@pytest.mark.parametrize('start, end, station, expected', [
+    # Single Digit Datetimes
+    (datetime.datetime(2018, 1, 5, 1), datetime.datetime(2018, 1, 9, 1),
+     'FSD',
+     'https://mesonet.agron.iastate.edu/request/asos/1min_dl.php?'
+     'station%5B%5D=FSD&tz=UTC&year1=2018&month1=01&day1=05&hour1=01'
+     '&minute1=00&year2=2018&month2=01&day2=09&hour2=01&minute2=00&'
+     'vars%5B%5D=tmpf&vars%5B%5D=dwpf&vars%5B%5D=sknt&vars%5B%5D=drct&'
+     'sample=1min&what=view&delim=comma&gis=yes'),
 
-## Test Fixtures
+    # Double Digit Datetimes
+    (datetime.datetime(2018, 10, 11, 12), datetime.datetime(2018, 10, 16, 15),
+     'MLI',
+     'https://mesonet.agron.iastate.edu/request/asos/1min_dl.php?'
+     'station%5B%5D=MLI&tz=UTC&year1=2018&month1=10&day1=11&hour1=12'
+     '&minute1=00&year2=2018&month2=10&day2=16&hour2=15&minute2=00&'
+     'vars%5B%5D=tmpf&vars%5B%5D=dwpf&vars%5B%5D=sknt&vars%5B%5D=drct&'
+     'sample=1min&what=view&delim=comma&gis=yes'),
 
-<div class="alert alert-success">
-<b>Exercise 7</b>
-  <ul>
-    <li>Make a fixture for testing our potential temperature calculation.
-        We can assume that we'll have other tests that need "fake" temperature
-        and pressure data, so this fixture will get reused.</li>
-    <li>In fact, we do have another test that needs temperature data - refactor
-        it to use the fixture.</li>
-  </ul>
-</div>
+    # Defaults
+    (None, None,
+     'MLI',
+     'https://mesonet.agron.iastate.edu/request/asos/1min_dl.php?'
+     'station%5B%5D=MLI&tz=UTC&year1=2018&month1=03&day1=25&hour1=12'
+     '&minute1=00&year2=2018&month2=03&day2=26&hour2=12&minute2=00&'
+     'vars%5B%5D=tmpf&vars%5B%5D=dwpf&vars%5B%5D=sknt&vars%5B%5D=drct'
+     '&sample=1min&what=view&delim=comma&gis=yes'),
 
-#### Solution
-```python
-# TODO Write me!
+    # Default Start Only
+    (None, datetime.datetime(2019, 3, 25, 12),
+     'MLI',
+     'https://mesonet.agron.iastate.edu/request/asos/1min_dl.php?'
+     'station%5B%5D=MLI&tz=UTC&year1=2019&month1=03&day1=24&hour1=12'
+     '&minute1=00&year2=2019&month2=03&day2=25&hour2=12&minute2=00&'
+     'vars%5B%5D=tmpf&vars%5B%5D=dwpf&vars%5B%5D=sknt&vars%5B%5D=drct'
+     '&sample=1min&what=view&delim=comma&gis=yes'),
+
+    # Default End Only
+    (datetime.datetime(2018, 3, 24, 12), None,
+     'MLI',
+     'https://mesonet.agron.iastate.edu/request/asos/1min_dl.php?'
+     'station%5B%5D=MLI&tz=UTC&year1=2018&month1=03&day1=24&hour1=12'
+     '&minute1=00&year2=2018&month2=03&day2=26&hour2=12&minute2=00&'
+     'vars%5B%5D=tmpf&vars%5B%5D=dwpf&vars%5B%5D=sknt&vars%5B%5D=drct'
+     '&sample=1min&what=view&delim=comma&gis=yes')
+])
+@patch('meteogram.meteogram.current_utc_time', new=mocked_current_utc_time)
+def test_build_asos_request_url(start, end, station, expected):
+    """
+    Test URL building for requests.
+    """
+    # Setup - Done by parameterized fixture
+
+    # Exercise
+    url = meteogram.build_asos_request_url(station, start, end)
+
+    # Verify
+    assert url == expected
+
+    # Cleanup - none necessary
 ```
 
 [Home](index.html)
