@@ -1,14 +1,21 @@
 """Test use of the meteogram module."""
 
 import datetime
-import os
+from pathlib import Path
 from unittest.mock import patch
 
 from numpy.testing import assert_almost_equal, assert_array_almost_equal
 import numpy as np
+import pandas as pd
 import pytest
+import matplotlib
 
 from meteogram import meteogram
+from meteogram.testing import assert_dataseries_equal, get_recorder
+
+matplotlib.use('Agg')
+
+recorder = get_recorder(__file__)
 
 
 def mocked_current_utc_time():
@@ -23,9 +30,9 @@ def load_example_asos():
     """
     Fixture to load example data from a csv file for testing.
     """
-    example_data_path = os.path.abspath(os.path.join('..', 'staticdata'))
-    #`example_data_path = '/Users/johnleeman/gitrepos/testing-with-python/staticdata'
-    data_path = os.path.join(example_data_path, 'AMW_example_data.csv')
+    example_data_path = (Path(__file__).resolve().parent / '..' /
+                         '..' / 'staticdata')
+    data_path = example_data_path / 'AMW_example_data.csv'
     return meteogram.download_asos_data(data_path)
 
 
@@ -46,11 +53,13 @@ def test_degF_to_degC_at_freezing():
     # Verify
     assert result == freezing_degC
 
-    # Cleanup
+    # Cleanup - none necessary
 
 #
 # Instructor led introductory examples
 #
+
+
 def test_title_case():
     # Setup
     input = 'this is a test string'
@@ -60,16 +69,17 @@ def test_title_case():
     actual = input.title()
 
     # Verify
-    assert actual==desired
+    assert actual == desired
 
-  # Cleanup
+    # Cleanup - none necessary
 
 #
 # Instructor led examples of numerical comparison
 #
 
+
 def test_does_three_equal_three():
-    assert 3==3
+    assert 3 == 3
 
 
 def test_floating_subtraction():
@@ -87,6 +97,7 @@ def test_floating_subtraction():
 #
 # Exercise 2 - Add calculation tests here
 #
+
 
 def test_wind_components():
     # Setup
@@ -112,6 +123,7 @@ def test_wind_components():
 # Instructor led mock example
 #
 
+
 @patch('meteogram.meteogram.current_utc_time', new=mocked_current_utc_time)
 def test_that_mock_works():
     """
@@ -124,14 +136,57 @@ def test_that_mock_works():
 
     # Verify
     truth = datetime.datetime(2018, 3, 26, 12)
-    assert result==truth
+    assert result == truth
 
-    # Cleanup - none required
+    # Cleanup - none necessary
 
 #
 # Exercise 4 - Add any tests that you can to increase the library coverage.
-# think of cases that may not change coverage, but should be tested for as well.
+# think of cases that may not change coverage, but should be tested
+# for as well.
 #
+
+
+def test_current_utc_time():
+    """Verify operation of utctime fetching (ignoring milliseconds)."""
+    # Setup - none necessary
+
+    # Exercise
+    result = meteogram.current_utc_time()
+
+    # Verify
+    truth = datetime.datetime.utcnow()
+    assert result.replace(microsecond=0) == truth.replace(microsecond=0)
+
+    # Cleanup - none necessary
+
+
+def test_potential_temperature():
+    """Test potential temperature calculation with known result."""
+    # Setup - none necessary
+
+    # Exercise
+    result = meteogram.potential_temperature(800, 273)
+
+    # Verify
+    truth = 290.96
+    assert_almost_equal(result, truth, 2)
+
+    # Cleanup - none necessary
+
+
+def test_exner_function():
+    """Test exner function calculation."""
+    # Setup - none necessary
+
+    # Exercise
+    result = meteogram.exner_function(500)
+
+    # Verify
+    truth = 0.8203833
+    assert_almost_equal(result, truth, 4)
+
+    # Cleanup - none necessary
 
 #
 # Exercise 4 - Stop Here
@@ -145,7 +200,6 @@ def test_plotting_meteogram_defaults(load_example_asos):
     """Test default meteogram plotting."""
     # Setup
     df = load_example_asos
-
 
     # Exercise
     fig, _, _, _ = meteogram.plot_meteogram(df)
@@ -165,7 +219,6 @@ def test_plotting_meteogram_direction_fiducials(load_example_asos):
     # Setup
     df = load_example_asos
 
-
     # Exercise
     fig, _, _, _ = meteogram.plot_meteogram(df, direction_markers=True)
 
@@ -179,7 +232,7 @@ def test_plotting_meteogram_direction_fiducials(load_example_asos):
 #
 # Exercise 6 - Refactor the URL builder tests that you can into a parameterized
 #              test and put that here. Remove the old tests.
-#
+
 @pytest.mark.parametrize('start, end, station, expected', [
     # Single Digit Datetimes
     (datetime.datetime(2018, 1, 5, 1), datetime.datetime(2018, 1, 9, 1),
@@ -250,5 +303,61 @@ def test_build_asos_request_url(start, end, station, expected):
 # Exercise 7 - vcrpy, use it to record responses to data gathering tests.
 #              modify the code already written above.
 #
+
+@recorder.use_cassette('ASOS_AMW_2018032512_2018032612')
+@patch('meteogram.meteogram.current_utc_time', new=mocked_current_utc_time)
+def test_download_asos_data():
+    """Test downloading ASOS data."""
+    # Setup
+    url = meteogram.build_asos_request_url('AMW')
+
+    # Exercise
+    df = meteogram.download_asos_data(url)
+
+    # Verify
+    first_row_truth = pd.Series(
+                      {'station_id': 'AMW',
+                       'station_name': 'Ames',
+                       'latitude_deg': 41.990439,
+                       'longitude_deg': -93.618515,
+                       'UTC': pd.Timestamp('2018-03-25 12:00:00'),
+                       'temperature_degF': 29,
+                       'dewpoint_degF': 24,
+                       'wind_speed_knots': 8,
+                       'wind_direction_degrees': 113})
+
+    assert_dataseries_equal(df.iloc[0], first_row_truth)
+
+    # Cleanup - none necessary
+
+
+@recorder.use_cassette('ASOS_AMW_Future')
+def test_download_asos_data_in_future():
+    """Test for correct behavior when asking for non-existant (future) data."""
+    # Setup
+    url = meteogram.build_asos_request_url('AMW',
+                                           datetime.datetime(2999, 10, 10, 10),
+                                           datetime.datetime(2999, 11, 10, 10))
+
+    # Exercise
+    df = meteogram.download_asos_data(url)
+
+    # Verify
+    assert df.empty
+
+    # Cleanup - none necessary
+
+
+def test_download_asos_data_start_after_end():
+    """Test for correct behavior when start and end times are reversed."""
+    # Setup
+    start = datetime.datetime(2018, 8, 1, 12)
+    end = datetime.datetime(2018, 7, 1, 12)
+
+    # Exercise/Verify
+    with pytest.raises(ValueError):
+        meteogram.build_asos_request_url('AMW', start, end)
+    # Cleanup - none necessary
+
 
 # Demonstration of TDD here (time permitting)

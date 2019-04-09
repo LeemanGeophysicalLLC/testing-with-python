@@ -1,7 +1,6 @@
 """Helps obtain, analyze, and plot surface observations as a meteogram."""
 
 import datetime
-import urllib
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -13,7 +12,7 @@ register_matplotlib_converters()
 
 def degF_to_degC(degF):
     """
-    Convert degF to degC.
+    Convert degF to degC
 
     Parameters
     ----------
@@ -27,13 +26,14 @@ def degF_to_degC(degF):
     """
     return (degF - 32) * (5 / 9)
 
+
 def current_utc_time():
     """
     Return the current UTC date and time.
 
     Returns
     -------
-    datetime.datetime: Current UTC date and time
+    datetime.dateimte: current UTC date and time
 
     """
     return datetime.datetime.utcnow()
@@ -57,12 +57,6 @@ def potential_temperature(pressure, temperature):
     The potential temperature corresponding to the temperature and
     pressure.
 
-    Notes
-    -----
-    Formula:
-
-    .. math:: \Theta = T (P_0 / P)^\kappa
-
     For inputs of 800 hPa and 273 Kelvin, output should be 290.96 K
 
     """
@@ -72,8 +66,8 @@ def potential_temperature(pressure, temperature):
 def exner_function(pressure, reference_pressure=1000):
     r"""Calculate the Exner function.
     .. math:: \Pi = \left( \frac{p}{p_0} \right)^\kappa
-    This can be used to calculate potential temperature from temperature (and visa-versa),
-    since
+    This can be used to calculate potential temperature from
+    temperature (and visa-versa), since
     .. math:: \Pi = \frac{T}{\theta}
 
     Parameters
@@ -81,7 +75,8 @@ def exner_function(pressure, reference_pressure=1000):
     pressure
         The total atmospheric pressure
     reference_pressure : `pint.Quantity`, optional
-        The reference pressure against which to calculate the Exner function, defaults to 1000 hPa
+        The reference pressure against which to calculate the Exner
+        function, defaults to 1000 hPa
 
     Returns
     -------
@@ -113,20 +108,23 @@ def build_asos_request_url(station, start_date=None, end_date=None):
     if end_date is None:
         end_date = current_utc_time()
 
-    # If there is no starting date specified, use 24 hours before the ending date and time
+    # If there is no starting date specified, use 24 hours
+    # before the ending date and time
     if start_date is None:
         start_date = end_date - datetime.timedelta(hours=24)
 
     # Make sure the starting and ending dates are not reversed
     if start_date > end_date:
-        raise ValueError('Unknown option for direction: {0}'.format(str(direction)))
+        raise ValueError('Start date cannot be after end date.')
 
-    url_str = (f'https://mesonet.agron.iastate.edu/request/asos/1min_dl.php?station%5B%5D='
-               f'{station}&tz=UTC&year1={start_date:%Y}&month1={start_date:%m}&day1'
-               f'={start_date:%d}&hour1={start_date:%H}&minute1={start_date:%M}&year2={end_date:%Y}&month2='
-               f'{end_date:%m}&day2={end_date:%d}&hour2={end_date:%H}&minute2={end_date:%M}&vars'
-               f'%5B%5D=tmpf&vars%5B%5D=dwpf&vars%5B%5D=sknt'
-               f'&vars%5B%5D=drct&sample=1min&what=view&delim=comma&gis=yes')
+    url_str = (f'https://mesonet.agron.iastate.edu/request/asos/'
+               f'1min_dl.php?station%5B%5D={station}&tz=UTC&year1='
+               f'{start_date:%Y}&month1={start_date:%m}&day1={start_date:%d}'
+               f'&hour1={start_date:%H}&minute1={start_date:%M}&year2='
+               f'{end_date:%Y}&month2={end_date:%m}&day2={end_date:%d}&hour2='
+               f'{end_date:%H}&minute2={end_date:%M}&vars%5B%5D=tmpf&vars%5B'
+               f'%5D=dwpf&vars%5B%5D=sknt&vars%5B%5D=drct&'
+               f'sample=1min&what=view&delim=comma&gis=yes')
     return url_str
 
 
@@ -144,7 +142,7 @@ def download_asos_data(url):
     pandas.DataFrame: Observation Data
     """
     # Data at the URL are CSV format
-    df =  pd.read_csv(url)
+    df = pd.read_csv(url)
 
     # There is a trailing comma, so remove the last column
     df.drop(columns=df.columns[-1], inplace=True)
@@ -172,25 +170,37 @@ def plot_meteogram(df, direction_markers=False):
     Returns
     -------
     matplotlib.figure.Figure, matplotlib.axes._subplots.AxesSubplot,
-    matplotlib.axes._subplots.AxesSubplot, matplotlib.axes._subplots.AxesSubplot
+    matplotlib.axes._subplots.AxesSubplot,
+    matplotlib.axes._subplots.AxesSubplot
     """
     fig = plt.figure(figsize=(10, 5))
     ax1 = plt.subplot(2, 1, 1)
     ax2 = plt.subplot(2, 1, 2, sharex=ax1)
     ax2b = ax2.twinx()
 
-    temperature_ymin = min([df['temperature_degF'].min(), df['dewpoint_degF'].min()]) - 5
-    temperature_ymax = max([df['temperature_degF'].max(), df['dewpoint_degF'].max()]) + 5
+    temperature_ymin = min([df['temperature_degF'].min(),
+                           df['dewpoint_degF'].min()]) - 5
 
-    ax1.fill_between(df['UTC'], df['temperature_degF'], temperature_ymin, color='tab:red')
-    ax1.fill_between(df['UTC'], df['dewpoint_degF'], temperature_ymin, color='tab:green')
-    ax2.fill_between(df['UTC'], df['wind_speed_knots'], df['wind_speed_knots'].min() - 5, color='tab:blue')
-    ax2b.scatter(df['UTC'], df['wind_direction_degrees'], edgecolor='tab:olive', color='None')
+    temperature_ymax = max([df['temperature_degF'].max(),
+                           df['dewpoint_degF'].max()]) + 5
+
+    ax1.fill_between(df['UTC'], df['temperature_degF'],
+                     temperature_ymin, color='tab:red')
+
+    ax1.fill_between(df['UTC'], df['dewpoint_degF'],
+                     temperature_ymin, color='tab:green')
+
+    ax2.fill_between(df['UTC'], df['wind_speed_knots'],
+                     df['wind_speed_knots'].min() - 5, color='tab:blue')
+
+    ax2b.scatter(df['UTC'], df['wind_direction_degrees'],
+                 edgecolor='tab:olive', color='None')
 
     # Set limits
     ax1.set_xlim(df['UTC'].min(), df['UTC'].max())
     ax1.set_ylim(temperature_ymin, temperature_ymax)
-    ax2.set_ylim(df['wind_speed_knots'].min() - 5, df['wind_speed_knots'].max() + 5)
+    ax2.set_ylim(df['wind_speed_knots'].min() - 5,
+                 df['wind_speed_knots'].max() + 5)
     ax2b.set_ylim(-10, 370)  # Wind Direction with a bit of padding
 
     # Add some labels
@@ -203,7 +213,8 @@ def plot_meteogram(df, direction_markers=False):
     # Add direction lines if requested
     if direction_markers:
         for value_degrees in [0, 90, 180, 270]:
-            ax2b.axhline(y=value_degrees, color='k', linestyle='--', linewidth=0.25)
+            ax2b.axhline(y=value_degrees, color='k',
+                         linestyle='--', linewidth=0.25)
 
     return fig, ax1, ax2, ax2b
 
