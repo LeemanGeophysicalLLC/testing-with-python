@@ -15,7 +15,7 @@ from meteogram.testing import assert_dataseries_equal, get_recorder
 
 matplotlib.use('Agg')
 
-recorder = get_recorder(__file__)
+recorder = get_recorder(Path(__file__).resolve().parent)
 
 
 def mocked_current_utc_time():
