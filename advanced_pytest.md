@@ -330,10 +330,12 @@ def test_download_asos_data():
     <li>Write a test using a cassette to check the behavior when we request
         data, but mix up the start and end dates. (Currently no error will be
         raised and we will say that we've decided that is acceptable behavior.)
+    </li>
   </ul>
 </div>
 
 #### Solution
+
 ```python
 @recorder.use_cassette('ASOS_AMW_Future')
 def test_download_asos_data_in_future():
