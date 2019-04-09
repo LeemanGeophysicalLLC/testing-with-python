@@ -100,15 +100,15 @@ Make the fixture by downloading the data for a `staticdata` directory in the
 top level of the repo. Data are [here](https://mesonet.agron.iastate.edu/request/asos/1min_dl.php?station%5B%5D=AMW&tz=UTC&year1=2018&month1=03&day1=26&hour1=00&minute1=00&year2=2018&month2=03&day2=27&hour2=00&minute2=00&vars%5B%5D=tmpf&vars%5B%5D=dwpf&vars%5B%5D=sknt&vars%5B%5D=drct&sample=1min&what=view&delim=comma&gis=yes).
 
 ```python
-import os
+from pathlib import Path
 
 @pytest.fixture
 def load_example_asos():
     """
     Fixture to load example data from a csv file for testing.
     """
-    example_data_path = os.path.abspath(os.path.join('..', 'staticdata'))
-    data_path = os.path.join(example_data_path, 'AMW_example_data.csv')
+    example_data_path = Path(__file__).resolve().parent / '..' / '..' / 'staticdata'
+    data_path = example_data_path / 'AMW_example_data.csv'
     return meteogram.download_asos_data(data_path)
 ```
 

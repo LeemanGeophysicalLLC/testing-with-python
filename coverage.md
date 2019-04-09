@@ -29,7 +29,46 @@ command line.
 
 #### Solution
 ```python
-# TODO Write me!
+def test_current_utc_time():
+    """Verify operation of utctime fetching (ignoring milliseconds)."""
+    # Setup - none necessary
+
+    # Exercise
+    result = meteogram.current_utc_time()
+
+    # Verify
+    truth = datetime.datetime.utcnow()
+    assert result.replace(microsecond=0) == truth.replace(microsecond=0)
+
+    # Cleanup - none necessary
+
+
+def test_potential_temperature():
+    """Test potential temperature calculation with known result."""
+    # Setup - none necessary
+
+    # Exercise
+    result = meteogram.potential_temperature(800, 273)
+
+    # Verify
+    truth = 290.96
+    assert_almost_equal(result, truth, 2)
+
+    # Cleanup - none necessary
+
+
+def test_exner_function():
+    """Test exner function calculation."""
+    # Setup - none necessary
+
+    # Exercise
+    result = meteogram.exner_function(500)
+
+    # Verify
+    truth = 0.8203833
+    assert_almost_equal(result, truth, 4)
+
+    # Cleanup - none necessary
 ```
 
 [Home](index.html)
