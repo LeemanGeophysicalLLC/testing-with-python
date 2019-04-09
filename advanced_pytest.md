@@ -61,9 +61,9 @@ pytest -k test_plotting_meteogram_defaults --mpl-generate-path=tests/baseline
 
 ```python
 # Add direction lines if requested
-    if direction_markers:
-        for value_degrees in [0, 90, 180, 270]:
-            ax2b.axhline(y=value_degrees, color='k', linestyle='--', linewidth=0.25)
+if direction_markers:
+    for value_degrees in [0, 90, 180, 270]:
+        ax2b.axhline(y=value_degrees, color='k', linestyle='--', linewidth=0.25)
 ```
 
 ```python
@@ -123,7 +123,7 @@ def test_plotting_meteogram_defaults(load_example_asos):
 
 
     # Exercise
-    fig, _, _ = meteogram.plot_meteogram(df)
+    fig, _, _, _ = meteogram.plot_meteogram(df)
 
     # Verify - Done by decorator when run with -mpl flag
 
@@ -142,7 +142,7 @@ def test_plotting_meteogram_direction_fiducials(load_example_asos):
 
 
     # Exercise
-    fig, _, _ = meteogram.plot_meteogram(df, direction_markers=True)
+    fig, _, _, _ = meteogram.plot_meteogram(df, direction_markers=True)
 
     # Verify - Done by decorator when run with -mpl flag
 
@@ -332,7 +332,7 @@ def test_download_asos_data():
 * Run the test suite and observe the creation of the fixture.
 
 <div class="alert alert-success">
-<b>Exercise</b>
+<b>Exercise 7</b>
   <ul>
     <li>Write a test using a cassette to check the behavior when we request
         data that are in the future. (Currently no error will be raised and
@@ -393,7 +393,7 @@ are switched (put right above string building):
 ```python
 # Make sure the starting and ending dates are not reversed
 if start_date > end_date:
-    raise ValueError('Unknown option for direction: {0}'.format(str(direction)))
+    raise ValueError('Start date cannot be after end date.')
 ```
 
 Now we need to change our test to verify that the `ValueError` is raised. Don't
