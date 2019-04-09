@@ -289,6 +289,16 @@ def get_recorder(test_file_path):
                                                      'fixtures'))
 ```
 
+* Add this to the top of our test file.
+
+```python
+from meteogram import meteogram
+from meteogram.testing import get_recorder
+
+
+recorder = get_recorder(__file__)
+```
+
 * Modify any functions calling out with the recorder.
 
 ```python
@@ -390,19 +400,17 @@ Now we need to change our test to verify that the `ValueError` is raised. Don't
 forget to remove the now unused fixture.
 
 ```python
-@recorder.use_cassette('ASOS_AMW_Reversed_Dates')
 def test_download_asos_data_start_after_end():
     """Test for correct behavior when start and end times are reversed."""
     # Setup
     start = datetime.datetime(2018, 8, 1, 12)
     end = datetime.datetime(2018, 7, 1, 12)
-    url = meteogram.build_asos_request_url('AMW', start, end)
 
     # Exercise/Verify
     with pytest.raises(ValueError):
-        meteogram.download_asos_data(url)
-
+        meteogram.build_asos_request_url('AMW', start, end)
     # Cleanup - none necessary
+
 ```
 
 [Home](index.html)

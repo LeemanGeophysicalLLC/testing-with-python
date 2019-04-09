@@ -532,6 +532,10 @@ sensor and another may not).
 #### Instructor code
 
 ```python
+from numpy.testing import assert_almost_equal
+import pandas as pd
+
+
 def assert_dataseries_equal(actual, desired):
     """
     Intelligently compare dataseries (i.e. dictionary) for testing.
