@@ -86,7 +86,7 @@ def exner_function(pressure, reference_pressure=1000):
     return (pressure / reference_pressure)**0.28562982892500527
 
 
-def build_asos_request_url(station, start_date=None, end_date=None):
+def build_asos_request_url(station, start_date, end_date):
     """
     Create a URL to request ASOS data from the Iowa State archive.
 
@@ -103,19 +103,6 @@ def build_asos_request_url(station, start_date=None, end_date=None):
     -------
     str: URL of the data
     """
-
-    # If there is no ending date specified, use the current date and time
-    if end_date is None:
-        end_date = current_utc_time()
-
-    # If there is no starting date specified, use 24 hours
-    # before the ending date and time
-    if start_date is None:
-        start_date = end_date - datetime.timedelta(hours=24)
-
-    # Make sure the starting and ending dates are not reversed
-    if start_date > end_date:
-        raise ValueError('Start date cannot be after end date.')
 
     url_str = (f'https://mesonet.agron.iastate.edu/request/asos/'
                f'1min_dl.php?station%5B%5D={station}&tz=UTC&year1='
@@ -158,7 +145,7 @@ def download_asos_data(url):
     return df
 
 
-def plot_meteogram(df, direction_markers=False):
+def plot_meteogram(df):
     """
     Plot a meteogram with matplotlib.
 
@@ -210,35 +197,4 @@ def plot_meteogram(df, direction_markers=False):
     ax2.set_ylabel('Knots', fontsize=label_fontsize)
     ax2b.set_ylabel('Degrees', fontsize=label_fontsize)
 
-    # Add direction lines if requested
-    if direction_markers:
-        for value_degrees in [0, 90, 180, 270]:
-            ax2b.axhline(y=value_degrees, color='k',
-                         linestyle='--', linewidth=0.25)
-
     return fig, ax1, ax2, ax2b
-
-
-def wind_components(speed, direction):
-    """
-    Calculate the U, V wind vector components from the speed and direction.
-
-    Parameters
-    ----------
-    speed : array_like
-        The wind speed (magnitude)
-    wdir : array_like
-        The wind direction, specified as the direction from which the wind is
-        blowing (0-360 degrees), with 360 degrees being North.
-
-    Returns
-    -------
-    u, v : tuple of array_like
-        The wind components in the X (East-West) and Y (North-South)
-        directions, respectively.
-
-    """
-    direction = np.radians(direction)
-    u = -speed * np.sin(direction)
-    v = -speed * np.cos(direction)
-    return u, v
