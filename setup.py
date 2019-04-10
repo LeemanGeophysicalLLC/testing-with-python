@@ -34,15 +34,9 @@ setup(
     keywords='meteorology weather',
 
     python_requires='!=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*',
-    install_requires=['matplotlib>=2.2.0', 'numpy>=1.12.0', 'scipy>=0.17.0',
-                      'pandas>=0.24.2'],
+    install_requires=['matplotlib>=2.2.0', 'numpy>=1.12.0', 'pandas>=0.24.2'],
     extras_require={
-        'test': ['pytest>=2.4', 'pytest-runner', 'pytest-mpl', 'pytest-flake8',
-                 'flake8>3.2.0', 'flake8-builtins!=1.4.0',
-                 'flake8-comprehensions', 'flake8-copyright',
-                 'flake8-docstrings', 'flake8-import-order', 'flake8-mutable',
-                 'flake8-pep3101', 'flake8-print', 'flake8-quotes',
-                 'pep8-naming']
+        'test': ['pytest>=2.4', 'pytest-runner', 'pytest-mpl', 'pytest-flake8']
     },
 
 
