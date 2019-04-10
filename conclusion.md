@@ -13,6 +13,6 @@ As you continue your testing journey, you might find these resources helpful:
 ## Survey
 We would greatly appreciate it if you would help us improve this course by
 filling out our brief survey. It will only take a couple of minutes.
-* Complete the survey [here]().
+* Complete the survey [here](https://forms.gle/AjDc1Rxq64UvpcUk8).
 
 [Home](index.html)

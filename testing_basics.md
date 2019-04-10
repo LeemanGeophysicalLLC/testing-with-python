@@ -8,6 +8,7 @@
 * Learn how to check return values in tests.
 * Write your own tests.
 * Write a mock for out tests.
+* writing test helps
 
 Tests in software are like rumble strips on the highway - they provide feedback
 to the driver as early as possible when they depart their normal lane and gives
@@ -127,9 +128,9 @@ def test_title_case():
     actual = input.title()
 
     # Verify
-    assert actual==desired
+    assert actual == desired
 
-  # Cleanup
+    # Cleanup - none necessary
 ```
 
 <div class="alert alert-success">
@@ -196,7 +197,7 @@ trouble. Testing integers is straightforward:
 
 ```python
 def test_does_three_equal_three():
-    assert 3==3
+    assert 3 == 3
 ```
 
 Trouble begins immediately when we leave the integer world though! Floating
@@ -214,7 +215,7 @@ def test_floating_subtraction():
   actual = 1 - 0.707
 
   # Verify
-  assert actual==desired
+  assert actual == desired
 
   # Cleanup
 ```
@@ -356,7 +357,6 @@ def test_wind_components_zero_wind():
 
     # Cleanup
 ```
-
 
 ### Array Comparison
 

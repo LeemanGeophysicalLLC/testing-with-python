@@ -71,4 +71,7 @@ def test_exner_function():
     # Cleanup - none necessary
 ```
 
+## Bonus
+Add the `--flake8` flag and cleanup any errors seen there.
+
 [Home](index.html)

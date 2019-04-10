@@ -278,15 +278,13 @@ for reasons we're already discussed.
 * Add to `testing.py` in the meteogram directory.
 
 ```python
-import os.path
-
+from numpy.testing import assert_almost_equal
 import vcr
 
 
 def get_recorder(test_file_path):
     """Return an appropriate response recorder for the given path."""
-    return vcr.VCR(cassette_library_dir=os.path.join(os.path.dirname(test_file_path),
-                                                     'fixtures'))
+    return vcr.VCR(cassette_library_dir=str(test_file_path / 'fixtures'))
 ```
 
 * Add this to the top of our test file.
@@ -296,7 +294,7 @@ from meteogram import meteogram
 from meteogram.testing import get_recorder
 
 
-recorder = get_recorder(__file__)
+recorder = get_recorder(Path(__file__).resolve().parent)
 ```
 
 * Modify any functions calling out with the recorder.
