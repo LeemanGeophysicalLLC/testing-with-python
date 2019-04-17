@@ -426,6 +426,8 @@ def mocked_current_utc_time():
 * Now let's use it on a test.
 
 ```python
+from unittest.mock import patch 
+
 @patch('meteogram.meteogram.current_utc_time', new=mocked_current_utc_time)
 def test_that_mock_works():
     """
