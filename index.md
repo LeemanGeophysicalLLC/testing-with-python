@@ -32,24 +32,24 @@ This is an **intermediate** skill level course. We assume that participants:
 - Have a GitHub account.
 
 ## Course Outline
-- [Setup and Introductions](setup.html) (15 minutes)
+- [Setup and Introductions](setup.html)
   - Meet each other.
   - Ensure that all learner's machines are setup properly with course content
     downloaded and the environment created and activated.
   - Introduce the example library we will be testing during the course.
-- [Testing Basics](testing_basics.html) (60 minutes)
+- [Testing Basics](testing_basics.html)
   - Structure of a test.
   - Testing a return value.
   - Running tests.
-- [Coverage](coverage.html) (30 minutes)
+- [Coverage](coverage.html)
   - Determining coverage with pytest-cov
-- [Advanced PyTest](advanced_pytest.html) (60 minutes)
+- [Advanced PyTest](advanced_pytest.html)
   - pytest-mpl for testing plots.
   - pytest parameterization.
   - pytest fixtures.
-- [Test Driven Development Introduction](TDD_intro.html) (45 mins, optional)
+- [Test Driven Development Introduction](TDD_intro.html)
   - Demonstration of TDD practices.
-- [Conclusion](conclusion.html) (15 minutes)
+- [Conclusion](conclusion.html)
   - Questions
   - Resources
   - Survey
