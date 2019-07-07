@@ -37,20 +37,21 @@ This is an **intermediate** skill level course. We assume that participants:
   - Ensure that all learner's machines are setup properly with course content
     downloaded and the environment created and activated.
   - Introduce the example library we will be testing during the course.
-- [Testing Basics](testing_basics.html)
-  - Structure of a test.
-  - Testing a return value.
-  - Running tests.
-- [Coverage](coverage.html)
-  - Determining coverage with pytest-cov
+- Introduction to Testing
+  - [Testing Basics](testing_basics.html)
+  - [Testing Philosophy](testing_philosophy.html)
+  - [Mocking](mocking.html)
+  - [Test Helpers](test_helpers.html)
+- Coverage
+  - [Determining coverage](coverage.html)
 - Advanced PyTest
-  - [pytest-mpl](pytest-mpl.html)
-  - [fixtures](fixtures.html)
-  - [parameterization](parameterization.html)
-  - [mocking web requests](mocking_web_requests.html)
-  - [testing for exceptions](error_testing.md)
-- [Test Driven Development Introduction](TDD_intro.html)
-  - Demonstration of TDD practices.
+  - [Image Testing](pytest-mpl.html)
+  - [Fixtures](fixtures.html)
+  - [Parameterization](parameterization.html)
+  - [Mocking Web Requests](mocking_web_requests.html)
+  - [Testing for Exceptions](error_testing.md)
+- Test Driven Development
+  - [Test Driven Development Introduction](TDD_intro.html)
 - [Conclusion](conclusion.html)
   - Questions
   - Resources
