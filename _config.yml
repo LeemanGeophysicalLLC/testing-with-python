@@ -3,4 +3,4 @@ logo: /assets/img/unit_testing.gif
 description: Contents for the software testing and testing automation with python short course.
 show_downloads: true
 google_analytics:
-theme: jekyll-theme-minimal
+theme: jekyll-theme-primer

@@ -7,8 +7,8 @@
 * Learn how to run tests.
 * Learn how to check return values in tests.
 * Write your own tests.
-* Write a mock for out tests.
-* writing test helps
+* Write a mock for our tests.
+* Writing test helps
 
 Tests in software are like rumble strips on the highway - they provide feedback
 to the driver as early as possible when they depart their normal lane and gives
@@ -22,7 +22,7 @@ have an accident.
   * Bug repellant
 * Understand the system under test (SUT)
   * Act as documentation
-* Reduce, not introduce risk
+* Reduce, not introduce, risk
   * Provide a safety net
   * Do no harm (no test logic in production)
 * Be easy to run (and are run frequently)
@@ -265,6 +265,11 @@ def test_floating_subtraction():
         of wind given a windspeed and direction.</li>
     <li>Write tests to verify proper behavior for directions of 0, 45, 360, and
         for a windspeed of zero.</li>
+  </ul>
+  Note: Meteorological wind components are computed as:
+  <ul>
+    <li>u = -speed * sin(theta)</li>
+    <li>v = -speed * cos(theta)</li>
   </ul>
 </div>
 
