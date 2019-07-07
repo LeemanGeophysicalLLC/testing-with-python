@@ -1,3 +1,5 @@
+<img src="assets/unit_testing.gif" alt="Testing Representation" align="left">
+
 Every developer has heard the saying that “untested software is broken
 software.” In this tutorial we will show you the best practices for software
 testing in Python using the pytest framework. Learners will write tests for
