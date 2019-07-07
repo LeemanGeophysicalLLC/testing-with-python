@@ -43,10 +43,12 @@ This is an **intermediate** skill level course. We assume that participants:
   - Running tests.
 - [Coverage](coverage.html)
   - Determining coverage with pytest-cov
-- [Advanced PyTest](advanced_pytest.html)
-  - pytest-mpl for testing plots.
-  - pytest parameterization.
-  - pytest fixtures.
+- Advanced PyTest
+  - [pytest-mpl](pytest-mpl.html)
+  - [fixtures](fixtures.html)
+  - [parameterization](parameterization.html)
+  - [mocking web requests](mocking_web_requests.html)
+  - [testing for exceptions](error_testing.md)
 - [Test Driven Development Introduction](TDD_intro.html)
   - Demonstration of TDD practices.
 - [Conclusion](conclusion.html)
