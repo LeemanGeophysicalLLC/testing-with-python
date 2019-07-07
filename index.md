@@ -1,4 +1,4 @@
-<img src="assets/unit_testing.gif" alt="Testing Representation" align="left">
+<img src="assets/img/unit_testing.gif" alt="Testing Representation" align="left">
 
 Every developer has heard the saying that “untested software is broken
 software.” In this tutorial we will show you the best practices for software
