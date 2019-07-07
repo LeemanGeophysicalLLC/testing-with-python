@@ -4,7 +4,7 @@
 Ensure learner's systems are setup and that we have met.
 
 ## Meet Each Other
-Ask attendees to *briefly* introduce themselves in 30 seconds on less telling us:
+Ask attendees to *briefly* introduce themselves in 30 seconds or less telling us:
 * Name
 * Job/Function
 * What they want from this course
