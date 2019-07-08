@@ -30,7 +30,7 @@ command line.
 #### Solution
 ```python
 def test_current_utc_time():
-    """Verify operation of utctime fetching (ignoring milliseconds)."""
+    """Verify operation of utctime fetching (ignoring microseconds)."""
     # Setup - none necessary
 
     # Exercise

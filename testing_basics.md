@@ -304,7 +304,7 @@ cleanup our tests we just wrote.
 <div class="alert alert-warning">
 <b>Instructor Led</b>
   <ul>
-    <li>Add the needed import.</li>
+    <li>Add the needed imports.</li>
     <li>Refactor the four tests just written into a single test using array
         comparison.</li>
   </ul>
@@ -312,6 +312,7 @@ cleanup our tests we just wrote.
 
 #### Instructor Code
 ```python
+import numpy as np
 from numpy.testing import assert_almost_equal, assert_array_almost_equal
 
 
