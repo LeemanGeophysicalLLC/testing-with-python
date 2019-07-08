@@ -43,6 +43,8 @@ def assert_dataseries_equal(actual, desired):
 Now, let's write a test using that helper.
 
 ```python
+from meteogram.testing import assert_dataseries_equal
+
 @patch('meteogram.meteogram.current_utc_time', new=mocked_current_utc_time)
 def test_download_asos_data():
     """Test downloading ASOS data."""

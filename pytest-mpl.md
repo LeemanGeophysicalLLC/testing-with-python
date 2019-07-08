@@ -10,6 +10,8 @@ same way. This is especially useful for ensuring that we catch when other
 libraries change defaults. To do this we create and store baseline images that
 we will compare against.
 
+* Add an import for pytest
+
 * Create a test function that returns a figure.
 
 * We then run the test function and store the output in a baselines directory
@@ -18,6 +20,8 @@ we will compare against.
 #### Instructor Code
 
 ```python
+import pytest
+
 @pytest.mark.mpl_image_compare(remove_text=True)
 def test_plotting_meteogram_defaults():
     """Test default meteogram plotting."""
@@ -48,7 +52,8 @@ pytest -k test_plotting_meteogram_defaults --mpl-generate-path=tests/baseline
 <b>Exercise 5</b>
   <ul>
     <li>Modify the plotting function such that it has a keyword argument
-    to plot horizontal lines (dashed) at N, S, E, W wind directions.
+    to plot horizontal lines (dashed) at N, S, E, W wind directions (i.e.
+    0, 180, 90, 270 degrees, respectively)
     This keyword argument should default to false.</li>
     <li>Create a new image test, baseline image, and make sure the test suite
     passes.</li>
