@@ -92,7 +92,7 @@ during the tutorial, so no need to fork this one, we just need some of the
 content.
 
 1. Clone the repository or download the ZIP file. Use the links on the left side
-   of the page. If you opt for the zip option, unzip the folder.
+   of the page. If you opt for the zip option, unzip the folder. This repository can be found at https://github.com/LeemanGeophysicalLLC/testing-with-python.git
 1. Open a terminal (or Anaconda Prompt) and `cd` into the repository.
 1. Create the environment with `conda env create` in the terminal/Anaconda
    prompt.
